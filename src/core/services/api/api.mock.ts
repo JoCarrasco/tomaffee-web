@@ -1,4 +1,5 @@
 import { IBoolResponse, IProject, ITimeEntry, ITimeEntryPrimitive, IUser } from "../../models/api";
+import { StorageKey } from "../../static/storage-key.enum";
 import { ApiResponses } from "./api-responses.mock";
 
 export class ApiMock {
@@ -14,13 +15,17 @@ export class ApiMock {
     return ApiResponses.getProjectById(projectId);
   }
 
+  static isTimeEntryOnGoing(): Promise<boolean> {
+    return TimeEntryHelper.isTimeEntryOnGoing();
+  }
+
   static createNewEntry(): Promise<IBoolResponse> {
     return new Promise(async (res, rej) => {
       try {
         const now = new Date();
         const isCreated = await TimeEntryHelper.createNewEntry({
           start: now,
-          description: '',
+          title: '',
         });
         res({
           result: isCreated,
@@ -30,15 +35,17 @@ export class ApiMock {
       }
     });
   }
+
+  static getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
+    return TimeEntryHelper.getUnfinishedTimeEntry();
+  }
 }
 
 export class TimeEntryHelper {
   static createNewEntry(timeEntry: ITimeEntryPrimitive): Promise<boolean> {
     return new Promise(async (res, rej) => {
       try {
-        console.log(timeEntry);
         const isTimeEntryOnGoing = await this.isTimeEntryOnGoing();
-        console.log(isTimeEntryOnGoing);
         if (!isTimeEntryOnGoing) {
           let newEntryId = 0;
           const storedEntries = await this.getStoredEntries();
@@ -47,14 +54,9 @@ export class TimeEntryHelper {
             newEntryId = storedEntries[0].id + 1;
           }
     
-          const newEntry: ITimeEntry = {
-            ...timeEntry,
-            id: newEntryId
-          };
-          console.log(storedEntries);
+          const newEntry: ITimeEntry = { ...timeEntry, id: newEntryId };
           storedEntries.push(newEntry);
-          // consol
-          localStorage.setItem('tmf-time_entries', JSON.stringify(storedEntries));
+          localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(storedEntries));
           res(true);
         } else {
           res(false)
@@ -65,7 +67,7 @@ export class TimeEntryHelper {
     })
   }
 
-  static async isTimeEntryOnGoing() {
+  static async isTimeEntryOnGoing(): Promise<boolean> {
     let isAnyEntryUnfinished = false;
     const storedEntries = await this.getStoredEntries();
     if (storedEntries.length > 0) {
@@ -74,11 +76,21 @@ export class TimeEntryHelper {
     return isAnyEntryUnfinished;
   }
 
+  static async getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
+    const isTimeEntryOnGoing = await this.isTimeEntryOnGoing();
+    if (isTimeEntryOnGoing) {
+      const storedEntries = await this.getStoredEntries();
+      return storedEntries.find(e => e.end === undefined);
+    }
+
+    return undefined;
+  }
+
   static getStoredEntries(): Promise<ITimeEntry[]> {
     return new Promise((res, rej) => {
       try {
         let entries: ITimeEntry[] = [];
-        const rawStoredEntries = localStorage.getItem('tmf-time_entries');
+        const rawStoredEntries = localStorage.getItem(StorageKey.TimeEntry);
         if (rawStoredEntries !== null) {
           entries = JSON.parse(rawStoredEntries);  
         }

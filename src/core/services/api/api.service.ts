@@ -1,34 +1,28 @@
-import { IUser, IProject, IBoolResponse } from "../../models/api";
-import { ApiResponses } from "./api-responses.mock";
-import { TimeEntryHelper } from "./api.mock";
+import { IUser, IProject, IBoolResponse, ITimeEntry } from "../../models/api";
+import { ApiMock } from "./api.mock";
 
 export class ApiService {
-   static getOwnUser(): IUser {
-    return ApiResponses.getUser;
+  static getOwnUser(): IUser {
+    return ApiMock.getOwnUser();
   }
 
   static getOwnProjects(): IProject[] {
-    return ApiResponses.ownProjects;
+    return ApiMock.getOwnProjects();
   }
 
   static getProjectById(projectId: number): IProject | undefined {
-    return ApiResponses.getProjectById(projectId);
+    return ApiMock.getProjectById(projectId);
   }
 
   static createNewEntry(): Promise<IBoolResponse> {
-    return new Promise(async (res, rej) => {
-      try {
-        const now = new Date();
-        const isCreated = await TimeEntryHelper.createNewEntry({
-          start: now,
-          description: '',
-        });
-        res({
-          result: isCreated,
-        })
-      } catch (e) {
-        rej(e);
-      }
-    });
+    return ApiMock.createNewEntry();
+  }
+
+  static isTimeEntryOnGoing(): Promise<boolean> {
+    return ApiMock.isTimeEntryOnGoing();
+  }
+
+  static getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
+    return ApiMock.getUnfinishedTimeEntry();
   }
 }

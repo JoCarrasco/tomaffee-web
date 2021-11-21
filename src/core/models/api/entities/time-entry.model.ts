@@ -2,7 +2,7 @@ import { ITimeEntryTag } from ".";
 import { IUser } from ".";
 
 export interface ITimeEntryPrimitive {
-  description: string | null;
+  title: string;
   start: Date;
   end?: Date;
 }
@@ -10,6 +10,7 @@ export interface ITimeEntryPrimitive {
 export interface ITimeEntry extends ITimeEntryPrimitive {
   id: number;
   taskId?: number;
+  description?: string;
   asignee?: IUser;
-  tags?: ITimeEntryTag[] | null;
+  tags?: ITimeEntryTag[];
 }

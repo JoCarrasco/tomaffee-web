@@ -5,5 +5,5 @@ export interface IProject {
   name: string;
   description: string | null;
   owner: IUser;
-  teamMembers: IUser[];
+  teamMembers?: IUser[];
 }
