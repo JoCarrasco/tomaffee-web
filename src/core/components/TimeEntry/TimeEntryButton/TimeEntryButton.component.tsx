@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApiService } from '../../../services/api/api.service';
 
-const TimeEntryButton = () => {
+export const TimeEntryButtonComponent = () => {
   function createNewTimeEntry() {
     return ApiService.createNewEntry();
   }
@@ -10,7 +10,5 @@ const TimeEntryButton = () => {
     <button onClick={() => createNewTimeEntry()}>
       Create new Time Entry
     </button>
-  )
+  );
 }
-
-export default TimeEntryButton;

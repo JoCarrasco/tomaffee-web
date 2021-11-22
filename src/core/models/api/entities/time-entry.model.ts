@@ -7,10 +7,13 @@ export interface ITimeEntryPrimitive {
   end?: Date;
 }
 
-export interface ITimeEntry extends ITimeEntryPrimitive {
+export interface ITimeEntryBareBones extends ITimeEntryPrimitive {
   id: number;
-  taskId?: number;
   description?: string;
-  asignee?: IUser;
+}
+
+export interface ITimeEntry extends ITimeEntryBareBones {
+  taskId?: number;
+  owner: IUser;
   tags?: ITimeEntryTag[];
 }
