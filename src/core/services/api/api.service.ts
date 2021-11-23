@@ -34,6 +34,10 @@ export class ApiService {
     return ApiMock.stopTimeEntry(timeEntryId);
   }
 
+  static getUserStoredEntries(): Promise<ITimeEntry[]> {
+    return ApiMock.getUserTimeEntries();
+  }
+
   static getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
     return ApiMock.getUnfinishedTimeEntry();
   }

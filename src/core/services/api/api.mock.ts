@@ -115,15 +115,12 @@ export class TimeEntryHelper {
     const entries = await this.getStoredEntries()
     const targetIndex = entries.findIndex(e => e.id === updatedTimeEntry.id);
     let targetTimeEntry = entries[targetIndex];
-    console.log(targetTimeEntry);
     delete updatedTimeEntry.id;
     const timeEntryWithChanges: ITimeEntry = {
       ...targetTimeEntry,
       ...updatedTimeEntry
     }
     entries[targetIndex] = timeEntryWithChanges;
-    console.log(timeEntryWithChanges);
-    localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
     return null;
   }
 

@@ -4,6 +4,10 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
+  &.time-entry-active {
+    background-color: red;
+    transition: all 0.4s;
+  }
   .time-entry-text-info-wrapper {
     text-align: left;
     input.time-entry-input-edit {
@@ -11,14 +15,14 @@
       font-size: 1em;
       &:focus {
         outline: none;
-        // outline-width: 0;
       }
     }
   }
   .time-entry-edit-icon {
     font-size: 20px;
   }
-  .time-entry-stop-icon {
+  .time-entry-stop-icon,
+  .time-entry-start-icon  {
     font-size: 35px;
   }
   i:hover {
