@@ -13,8 +13,8 @@ export const TimeEntryListComponent = () => {
         setTimeEntries(storedEntries);
       });
     }
-  }, [])
-  
+  }, []);
+
   function onTimeEntryStop() {
     TimeEntryService.forceUpdate();
   }
@@ -43,9 +43,6 @@ export const TimeEntryListComponent = () => {
 
   return (
     <div>
-      <div>
-        {/* <p>Current Time Passed: {TimeEntryService.currentTimeEntryTimeDisplay}</p> */}
-      </div>
       {getTimeEntriesTemplate()}
     </div>
   );

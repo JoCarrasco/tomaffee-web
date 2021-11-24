@@ -1,3 +1,4 @@
+import { DateHelper } from "../../classes/date-helper.class";
 import { IBoolResponse, IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
 import { StorageKey } from "../../static/storage-key.enum";
 import { ApiResponses } from "./api-responses.mock";
@@ -35,7 +36,7 @@ export class ApiMock {
     return new Promise(async (res, rej) => {
       try {
         const user = this.getOwnUser();
-        const now = new Date();
+        const now = DateHelper.getNow();
         const isCreated = await TimeEntryHelper.createNewEntry(
           user,
           {
@@ -127,7 +128,7 @@ export class TimeEntryHelper {
   static async stopTimeEntry(timeEntryId: number): Promise<null> {
     const entries = await this.getStoredEntries()
     const findTargetEntry = entries.findIndex(e => e.id === timeEntryId);
-    entries[findTargetEntry].end = new Date();
+    entries[findTargetEntry].end = DateHelper.getNow();
     localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
     return null;
   }
@@ -138,7 +139,14 @@ export class TimeEntryHelper {
         let entries: ITimeEntry[] = [];
         const rawStoredEntries = localStorage.getItem(StorageKey.TimeEntry);
         if (rawStoredEntries !== null) {
-          entries = JSON.parse(rawStoredEntries);  
+          entries = JSON.parse(rawStoredEntries);
+          entries = entries.map((entry) => {
+            entry.start = new Date(entry.start);
+            if (entry.end !== undefined) {
+              entry.end = new Date(entry.end);
+            }
+            return entry;
+          })
         }
         res(entries);
       } catch (e) {
