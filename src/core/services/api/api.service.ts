@@ -30,7 +30,7 @@ export class ApiService {
     return ApiMock.isTimeEntryOnGoing();
   }
 
-  static stopTimeEntry(timeEntryId: number): Promise<null> {  
+  static stopTimeEntry(timeEntryId: number): Promise<void> {  
     return ApiMock.stopTimeEntry(timeEntryId);
   }
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { ApiService } from '../../../services/api/api.service';
+import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
 
 export const TimeEntryButtonComponent = () => {
   function createNewTimeEntry() {
-    return ApiService.createNewEntry();
+    return TimeEntryService.initWithNewTimeEntry();
   }
 
   return (

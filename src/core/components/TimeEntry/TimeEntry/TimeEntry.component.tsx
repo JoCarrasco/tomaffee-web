@@ -5,121 +5,61 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faStopCircle, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
 import { TimeEntryPickerComponent } from '../TimeEntryPicker/TimeEntryPicker.component';
-import { DateHelper } from '../../../classes/date-helper.class';
 import './TimeEntry.style.scss';
 
 interface ITimeEntryComponentProps {
   timeEntry: ITimeEntry;
+  isOnGoing: boolean;
+  now?: Date;
   onTimeEntryStop: (...args: any[]) => any;
 }
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
-  const [isEditing, setIsEditing] = React.useState<boolean>(false);
-  const [title, setTitle] = React.useState<string>(props.timeEntry.title);
-  const [isLocalTimeEntryOnGoing, setIsLocalTimeEntryOnGoing] = React.useState<boolean>(false);
-  const [timeEntry, setTimeEntry] = React.useState<ITimeEntry | null>(null);
-  const [nowInDate, setNowInDate] = React.useState<Date>(props.timeEntry.end ? props.timeEntry.end : DateHelper.getNow());
-  const [canEdit, setCanEdit] = React.useState<boolean>(false);
-
   React.useLayoutEffect(() => {
-    TimeEntryService.getAllInfo().subscribe((info) => {
-      if (info?.editingTimeEntryId === undefined) {
-        setCanEdit(true);
-      } else {
-        setCanEdit(info?.editingTimeEntryId === props.timeEntry.id);
-      }
 
-      if (info !== null && info.timeEntry !== undefined) {
-        if (info.timeEntry.id === props.timeEntry.id) {
-          setTimeEntry(info.timeEntry);
-          if (!isLocalTimeEntryOnGoing) {
-            setIsLocalTimeEntryOnGoing(true);
-            setNowInDate(info.now);
-          }
-        } else {
-          setTimeEntry(props.timeEntry);
-        }
-      } else {
-        setTimeEntry(props.timeEntry);
-      }
-    });
   }, []);
-
-  function handleTitleInputChange(value: string) {
-    setTitle(value);
-  }
 
   function getTimeEntryEditable(): Partial<ITimeEntryBareBones> {
     return {
-      id: props.timeEntry.id,
-      title
+      id: props.timeEntry.id
     }
   }
 
-  async function stopEdition() {
-    setIsEditing(false);
+  async function stopTimeEntrySession() {
+    await TimeEntryService.stop();
+    props.onTimeEntryStop(props.timeEntry.id);
     const updatedTimeEntry = getTimeEntryEditable();
     await ApiService.updateTimeEntry(updatedTimeEntry);
   }
 
-  async function stopCurrentOnGoingTimeEntry() {
-    if (timeEntry !== null) {
-      await ApiService.stopTimeEntry(timeEntry.id);
-      props.onTimeEntryStop(timeEntry.id);
-      TimeEntryService.forceUpdate();
-      stopEdition();
-    }
-  }
-
   async function createNewEntry() {
-    await ApiService.createNewEntry();
-    TimeEntryService.forceUpdate();
+    TimeEntryService.initWithNewTimeEntry();
   }
 
-  function startEdition() {
-    if (canEdit) {
-      TimeEntryService.setIsEditing(props.timeEntry.id);
-    }
-  }
-
-  if (timeEntry !== null) {
-    return (
-      <div className={`time-entry-default ${isLocalTimeEntryOnGoing ? 'time-entry-active' : ''}`}>
-        <div className="time-entry-text-info-wrapper">
-          {
-            isEditing ?
-            <input
-              onChange={(e) => { handleTitleInputChange(e.target.value) }}
-              onBlur={() => stopEdition()}
-              contentEditable="true"
-              placeholder="Add a description"
-              className="time-entry-input-edit"
-              type="text" value={title} /> :
-            <p>{title === '' ? 'Add a description' : title}</p>
-          }
-        </div>
+  return (
+    <div className={`time-entry-default ${props.isOnGoing ? 'time-entry-active' : ''}`}>
+      <div className="time-entry-text-info-wrapper">
+          <p>{props.timeEntry.title === '' ? 'Add a description' : props.timeEntry.title}</p>
+      </div>
+      <div>
         <div>
-          <div>
-            <TimeEntryPickerComponent
-              onStartEdit={() => startEdition()}
-              start={timeEntry.start} end={nowInDate} canEdit={canEdit} />
-          </div>
-        </div>
-        <div>
-          <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} /></i>
-          {
-            isLocalTimeEntryOnGoing ?
-            <i className="time-entry-stop-icon" onClick={() => stopCurrentOnGoingTimeEntry()}>
-              <FontAwesomeIcon icon={faStopCircle} />
-            </i> :
-            <i className="time-entry-start-icon" onClick={() => createNewEntry()}>
-              <FontAwesomeIcon icon={faPlayCircle} />
-            </i>
-          }
+          <TimeEntryPickerComponent
+            onStartEdit={() => {}}
+            start={props.timeEntry.start} end={props.now ? props.now : props.timeEntry.end} canEdit={false} />
         </div>
       </div>
-    );
-  } else {
-    return (<></>);
-  }
+      <div>
+        <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} /></i>
+        {
+          props.isOnGoing ?
+          <i className="time-entry-stop-icon" onClick={() => stopTimeEntrySession()}>
+            <FontAwesomeIcon icon={faStopCircle} />
+          </i> :
+          <i className="time-entry-start-icon" onClick={() => createNewEntry()}>
+            <FontAwesomeIcon icon={faPlayCircle} />
+          </i>
+        }
+      </div>
+    </div>
+  );
 };

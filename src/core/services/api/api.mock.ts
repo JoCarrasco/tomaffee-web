@@ -57,7 +57,7 @@ export class ApiMock {
     return TimeEntryHelper.getUnfinishedTimeEntry();
   }
 
-  static stopTimeEntry(timeEntryId: number): Promise<null> {
+  static stopTimeEntry(timeEntryId: number): Promise<void> {
     return TimeEntryHelper.stopTimeEntry(timeEntryId);
   }
 }
@@ -125,12 +125,11 @@ export class TimeEntryHelper {
     return null;
   }
 
-  static async stopTimeEntry(timeEntryId: number): Promise<null> {
-    const entries = await this.getStoredEntries()
+  static async stopTimeEntry(timeEntryId: number): Promise<void> {
+    const entries = await this.getStoredEntries();
     const findTargetEntry = entries.findIndex(e => e.id === timeEntryId);
     entries[findTargetEntry].end = DateHelper.getNow();
-    localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
-    return null;
+    return localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
   }
 
   static getStoredEntries(): Promise<ITimeEntry[]> {

@@ -11,7 +11,6 @@ interface TimeEntryPickerComponentProps {
 }
 
 export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) => {
-  console.log(props.canEdit);
   const [isEditing, setIsEditing] = React.useState<boolean>(false);
 
   function canEdit() {
