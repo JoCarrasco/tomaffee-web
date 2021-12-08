@@ -2,6 +2,7 @@ import { ApiService } from "../api/api.service";
 import { DateHelper } from "../../classes/date-helper.class";
 import { TimeEntryServiceConstants } from "./time-entry.service.constants";
 import { BehaviorSubject, Observable } from "rxjs";
+import { ITimeEntryPrimitive } from "../../models/api";
 
 interface ITimeEntryServiceFullWatcher {
   now: Date;
@@ -20,9 +21,9 @@ export class TimeEntryService {
     }
   }
 
-  static async initWithNewTimeEntry() {
+  static async initWithNewTimeEntry(predefinedTimeEntry?: ITimeEntryPrimitive) {
     if (!this.isOngoing) {
-      await ApiService.createNewEntry();
+      await ApiService.createNewEntry(predefinedTimeEntry);
       this.initWatcher();
     }
   }
@@ -37,13 +38,8 @@ export class TimeEntryService {
 
   static setTimeEntryEdition(timeEntryId: number): void {
     const fullWatcher = this.fullWatcher.getValue();
-    if (fullWatcher !== null) {
-      const updatedWatcher: ITimeEntryServiceFullWatcher = {
-        ...fullWatcher,
-        timeEntryId
-      }
-      this.fullWatcher.next(updatedWatcher);
-    }
+    if (fullWatcher === null) return;
+    this.fullWatcher.next({ ...fullWatcher, timeEntryId});
   }
 
   private static setUpdatedData(): Promise<void> {
@@ -59,7 +55,6 @@ export class TimeEntryService {
                 { ...fullWatcher, ...partialWatcherValue } :
                 partialWatcherValue
               );
-  
               if (!this.isOngoing) {
                 this.isOngoing = true;
               }
@@ -151,13 +146,8 @@ export class TimeEntryService {
 
   private static async sendStopSignalToApi() {
     const fullWatcher = this.fullWatcher.getValue();
-    if (fullWatcher !== null) {
-      const timeEntryId = fullWatcher.timeEntryId;
-      if (timeEntryId !== undefined) {
-        return ApiService.stopTimeEntry(timeEntryId);
-      }
-    }
-
-    return;
+    if (fullWatcher === null) return;
+    if (fullWatcher.timeEntryId === undefined) return;
+    return ApiService.stopTimeEntry(fullWatcher.timeEntryId);
   }
 }

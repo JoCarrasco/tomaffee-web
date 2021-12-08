@@ -1,4 +1,4 @@
-import { IUser, IProject, IBoolResponse, ITimeEntry, ITimeEntryBareBones } from "../../models/api";
+import { IUser, IProject, IBoolResponse, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive } from "../../models/api";
 import { ApiMock } from "./api.mock";
 
 export class ApiService {
@@ -18,8 +18,8 @@ export class ApiService {
     return ApiMock.getTimeEntryById(timeEntryId);
   }
 
-  static createNewEntry(): Promise<IBoolResponse> {
-    return ApiMock.createNewEntry();
+  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<IBoolResponse> {
+    return ApiMock.createNewEntry(predefinedTimeEntry);
   }
 
   static async getUserTimeEntries(): Promise<ITimeEntry[]> {

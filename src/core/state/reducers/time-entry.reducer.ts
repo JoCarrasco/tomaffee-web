@@ -1,15 +1,24 @@
-import { TimeEntryActionType, TTimeEntryAction } from "../actions/time-entry.action";
+import { ITimeEntry } from "../../models/api";
+import { ITimeEntryAction, TimeEntryActionType } from "../actions/time-entry.action";
 
-const TimeEntryReducer = (state = [], action: TTimeEntryAction) => {
+export interface ITimeEntryState {
+  onGoingTimeEntryId?: number;
+  fetchedTimeEntries: ITimeEntry[];
+}
+
+const initialTimeEntryState: ITimeEntryState = {
+  fetchedTimeEntries: []
+}
+
+const TimeEntryReducer = (state = initialTimeEntryState, action: ITimeEntryAction) => {
   switch (action.type) {
-    case TimeEntryActionType.Add:
-      return [
+    case TimeEntryActionType.Add: {
+      const { id } = action.payload;
+      return {
         ...state,
-        {
-          title: action.title,
-          start: new Date()
-        }
-      ]
+        currentTimeEntryId: id
+      }
+    }
     default:
       return state
   }

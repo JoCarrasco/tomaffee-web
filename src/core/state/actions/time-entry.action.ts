@@ -1,22 +1,15 @@
-import { ITimeEntry } from "../../models/api";
+import { ITimeEntry, ITimeEntryPrimitive } from "../../models/api";
+import { TimeEntryService } from "../../services/time-entry/time-entry.service";
 
 export interface ITimeEntryAction {
-  type: string;
+  type: TimeEntryActionType;
+  payload: ITimeEntryActionPayload;
 }
 
-export interface ITimeEntryActionAdd extends ITimeEntryAction {
-  title: string;
+export interface ITimeEntryActionPayload {
+  id: number;
+  chunk?: ITimeEntryPrimitive;
 }
-
-export interface ITimeEntryActionRemove  extends ITimeEntryAction {
-  timeEntryId: number;
-}
-
-export interface ITimeEntryActionUpdate  extends ITimeEntryAction {
-  updatedTimeEntry: ITimeEntry;
-}
-
-export type TTimeEntryAction = ITimeEntryAction & ITimeEntryActionAdd & ITimeEntryActionRemove & ITimeEntryActionUpdate;
 
 export enum TimeEntryActionType {
   Add = 'ADD_TIME_ENTRY',
@@ -24,17 +17,18 @@ export enum TimeEntryActionType {
   Update = 'UPDATE_TIME_ENTRY'
 }
 
-export const addTimeEntry = (title: string = '') => ({
+export const addTimeEntry = (chunk: ITimeEntryPrimitive) => {
   type: TimeEntryActionType.Add,
-  title
-});
+  timeEntryChunk
+};
 
 export const removeTimeEntry = (timeEntryId: number) => ({
   type: TimeEntryActionType.Remove,
   timeEntryId
 });
 
-export const updateTimeEntry = (updatedTimeEntry: ITimeEntry) => ({
+export const updateTimeEntry = (timeEntryId: number, updatedChunk: ITimeEntryPrimitive) => ({
   type: TimeEntryActionType.Update,
-  updatedTimeEntry
+  timeEntryId,
+  updatedChunk
 });

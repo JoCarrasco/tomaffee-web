@@ -9,10 +9,10 @@ export interface ITimeEntryPrimitive {
 
 export interface ITimeEntryBareBones extends ITimeEntryPrimitive {
   id: number;
-  description?: string;
 }
 
 export interface ITimeEntry extends ITimeEntryBareBones {
+  description?: string;
   taskId?: number;
   owner: IUser;
   tags?: ITimeEntryTag[];

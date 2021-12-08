@@ -32,13 +32,14 @@ export class ApiMock {
     return TimeEntryHelper.isTimeEntryOnGoing();
   }
 
-  static createNewEntry(): Promise<IBoolResponse> {
+  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<IBoolResponse> {
     return new Promise(async (res, rej) => {
       try {
         const user = this.getOwnUser();
         const now = DateHelper.getNow();
         const isCreated = await TimeEntryHelper.createNewEntry(
           user,
+          predefinedTimeEntry ? predefinedTimeEntry :
           {
             start: now,
             title: '',
@@ -80,7 +81,7 @@ export class TimeEntryHelper {
           localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(storedEntries));
           res(true);
         } else {
-          res(false)
+          res(false);
         }
       } catch (e) {
         rej(e);
@@ -115,7 +116,7 @@ export class TimeEntryHelper {
   static async updateTimeEntry(updatedTimeEntry: Partial<ITimeEntryBareBones>): Promise<null> {
     const entries = await this.getStoredEntries()
     const targetIndex = entries.findIndex(e => e.id === updatedTimeEntry.id);
-    let targetTimeEntry = entries[targetIndex];
+    const targetTimeEntry = entries[targetIndex];
     delete updatedTimeEntry.id;
     const timeEntryWithChanges: ITimeEntry = {
       ...targetTimeEntry,
