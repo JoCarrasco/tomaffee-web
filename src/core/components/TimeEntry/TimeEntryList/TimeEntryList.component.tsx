@@ -40,16 +40,15 @@ export const TimeEntryListComponent = () => {
       if (timeEntries.length > 0) {
         return (
           <div>
-            {timeEntries.map((timeEntry, i) => {
-              return (
-                <TimeEntryComponent
-                  key={i}
-                  isOnGoing={timeEntry.id === timeEntryId}
-                  now={timeEntry.id === timeEntryId ? nowInDate : undefined}
-                  timeEntry={timeEntry}
-                  onTimeEntryStop={() => { }} />
-              )
-            })}
+            {timeEntries.map((timeEntry, i) => (
+              <TimeEntryComponent
+                key={i}
+                isOnGoing={timeEntry.id === timeEntryId}
+                now={timeEntry.id === timeEntryId ? nowInDate : undefined}
+                timeEntry={timeEntry}
+                onTimeEntryStop={() => { }}
+              />
+            ))}
           </div>
         );
       } else {
