@@ -10,12 +10,13 @@ export const TimeEntryListComponent = () => {
   const [timeEntryId, setTimeEntryId] = React.useState<number | null>(null);
   const [nowInDate, setNowInDate] = React.useState<Date>(new Date());
   const [timeServiceSubscription, setTimeServiceSubscription] = React.useState<Subscription | null>(null);
+  const [changeRequestSubscription, setChangeRequestSubscription] = React.useState<Subscription | null>(null);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     ApiService.getUserTimeEntries().then((storedEntries) => {
       setTimeEntries(storedEntries);
     });
-    
+
     if (!timeServiceSubscription) {
       setTimeServiceSubscription(
         TimeEntryService.getWatcher().subscribe((info) => {
@@ -29,33 +30,45 @@ export const TimeEntryListComponent = () => {
             setTimeEntryId(null);
           }
         })
-      )
+      );
     }
-  }, [timeEntryId]);
+
+    if (!changeRequestSubscription) {
+      setChangeRequestSubscription(TimeEntryService.getChangeRequests().subscribe((changes) => {
+        if (changes !== null && timeEntries !== null) {
+          const ids = changes.map((c) => c.id);
+          ApiService.getTimeEntriesByIds(ids).then((requestedEntries) => {
+            requestedEntries.forEach((entry) => {
+              const copyEntries = timeEntries;
+              const targetTimeEntryIndex = copyEntries.findIndex(t => t.id === entry.id);
+              copyEntries[targetTimeEntryIndex] = entry;
+              setTimeEntries(copyEntries);
+              TimeEntryService.closeChangeRequest();
+            })
+          });
+        }
+      }));
+    }
+  }, []);
 
   function getTimeEntriesTemplate() {
     if (timeEntries === null) {
       return (<p>No Time Entries</p>);
     } else {
-      if (timeEntries.length > 0) {
-        return (
-          <div>
-            {timeEntries.map((timeEntry, i) => (
+      return (
+        <div>
+          {timeEntries.map((timeEntry, i) => (
+            <div>
               <TimeEntryComponent
                 key={i}
                 isOnGoing={timeEntry.id === timeEntryId}
                 now={timeEntry.id === timeEntryId ? nowInDate : undefined}
                 timeEntry={timeEntry}
-                onTimeEntryStop={() => { }}
               />
-            ))}
-          </div>
-        );
-      } else {
-        return (
-          <p>No Time Entries</p>
-        );
-      }
+            </div>
+          ))}
+        </div>
+      );
     }
   }
 

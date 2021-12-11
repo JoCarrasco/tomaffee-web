@@ -4,14 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faStopCircle, faPlayCircle } from '@fortawesome/free-solid-svg-icons';
 import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
 import { TimeEntryPickerComponent } from '../TimeEntryPicker/TimeEntryPicker.component';
-import './TimeEntry.style.scss';
 import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
+import './TimeEntry.style.scss';
 
 interface ITimeEntryComponentProps {
   timeEntry: ITimeEntry;
   isOnGoing: boolean;
   now?: Date;
-  onTimeEntryStop: (...args: any[]) => any;
+  onTimeEntryStop?: (...args: any[]) => any;
 }
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
@@ -19,7 +19,9 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   
   async function stopTimeEntrySession() {
     await TimeEntryService.stop();
-    props.onTimeEntryStop(props.timeEntry.id);
+    if (props.onTimeEntryStop) {
+      props.onTimeEntryStop(props.timeEntry.id);
+    }
   }
 
   async function createNewEntry() {
@@ -28,7 +30,9 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
 
   return (
     <div className="time-entry-component-wrapper">
-      <TimeEntryEditorComponent show={isEditing} timeEntryId={props.timeEntry.id}/>
+      <TimeEntryEditorComponent show={isEditing} timeEntryId={props.timeEntry.id}
+        onEditionClosed={() => setIsEditing(false)}
+        onEditionFinished={() => setIsEditing(false)}/>
       <div className={`time-entry-default ${props.isOnGoing ? 'time-entry-active' : ''}`}>
         <div className="time-entry-text-info-wrapper">
           <p>{props.timeEntry.title === '' ? 'Add a description' : props.timeEntry.title}</p>
@@ -36,8 +40,8 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         <div>
           <div>
             <TimeEntryPickerComponent
-              onStartEdit={() => {}}
-              start={props.timeEntry.start} end={props.now ? props.now : props.timeEntry.end} canEdit={false} />
+            onStartEdit={() => {}}
+            start={props.timeEntry.start} end={props.now ? props.now : props.timeEntry.end} canEdit={false} />
           </div>
         </div>
         <div>

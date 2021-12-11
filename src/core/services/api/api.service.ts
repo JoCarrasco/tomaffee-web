@@ -18,6 +18,10 @@ export class ApiService {
     return ApiMock.getTimeEntryById(timeEntryId);
   }
 
+  static getTimeEntriesByIds(ids: number[]): Promise<ITimeEntry[]> {
+    return ApiMock.getTimeEntriesByIds(ids);
+  }
+
   static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<IBoolResponse> {
     return ApiMock.createNewEntry(predefinedTimeEntry);
   }

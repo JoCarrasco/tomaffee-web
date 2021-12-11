@@ -9,16 +9,33 @@ interface ITimeEntryServiceFullWatcher {
   timeEntryId?: number;
 }
 
+interface ITimeEntryChangeRequest {
+  id: number;
+}
+
 export class TimeEntryService {
   private static isOngoing: boolean = false;
   private static counterInterval: NodeJS.Timeout | undefined;
   private static watchInterval: NodeJS.Timeout | undefined;
   private static fullWatcher = new BehaviorSubject<ITimeEntryServiceFullWatcher | null>(null);
+  private static changeRequest = new BehaviorSubject<ITimeEntryChangeRequest[] | null>(null);
 
   static init() {
     if (!this.isOngoing) {
       this.initWatcher();
     }
+  }
+
+  static getChangeRequests(): Observable<ITimeEntryChangeRequest[] | null> {
+    return this.changeRequest.asObservable();
+  }
+
+  static sendChangeRequest(ids:  ITimeEntryChangeRequest[]) {
+    this.changeRequest.next(ids);
+  }
+
+  static closeChangeRequest() {
+    this.changeRequest.next(null);
   }
 
   static async initWithNewTimeEntry(predefinedTimeEntry?: ITimeEntryPrimitive) {
@@ -98,7 +115,6 @@ export class TimeEntryService {
   private static stopWatcher(): Promise<void> {
     return new Promise(async (res, rej) => {
       try {
-        
         if (this.watchInterval) {
           clearInterval(this.watchInterval);
           this.watchInterval = undefined;

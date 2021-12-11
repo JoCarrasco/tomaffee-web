@@ -20,6 +20,10 @@ export class ApiMock {
     return TimeEntryHelper.getTimeEntryById(timeEntryId);
   }
 
+  static getTimeEntriesByIds(ids: number[]): Promise<ITimeEntry[]> {
+    return TimeEntryHelper.getTimeEntriesById(ids);
+  }
+
   static updateTimeEntry(updatedTimeEntry: Partial<ITimeEntryBareBones>): Promise<null> {
     return TimeEntryHelper.updateTimeEntry(updatedTimeEntry);
   }
@@ -78,7 +82,7 @@ export class TimeEntryHelper {
     
           const newEntry: ITimeEntry = { ...timeEntry, id: newEntryId, owner: user};
           storedEntries.push(newEntry);
-          localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(storedEntries));
+          this.saveTimeEntries(storedEntries);
           res(true);
         } else {
           res(false);
@@ -108,13 +112,19 @@ export class TimeEntryHelper {
     return undefined;
   }
 
+  static async getTimeEntriesById(ids: number[]) {
+    const entries = await this.getStoredEntries();
+    const filteredEntries = entries.filter((entry) => ids.includes(entry.id));
+    return filteredEntries;
+  }
+
   static async getTimeEntryById(timeEntryId: number): Promise<ITimeEntry | undefined> {
     const entries = await this.getStoredEntries()
     return entries.find(e => e.id === timeEntryId);
   }
 
   static async updateTimeEntry(updatedTimeEntry: Partial<ITimeEntryBareBones>): Promise<null> {
-    const entries = await this.getStoredEntries()
+    const entries = await this.getStoredEntries();
     const targetIndex = entries.findIndex(e => e.id === updatedTimeEntry.id);
     const targetTimeEntry = entries[targetIndex];
     delete updatedTimeEntry.id;
@@ -123,14 +133,19 @@ export class TimeEntryHelper {
       ...updatedTimeEntry
     }
     entries[targetIndex] = timeEntryWithChanges;
+    this.saveTimeEntries(entries);
     return null;
+  }
+
+  private static saveTimeEntries(entries: ITimeEntry[]) {
+    return localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
   }
 
   static async stopTimeEntry(timeEntryId: number): Promise<void> {
     const entries = await this.getStoredEntries();
     const findTargetEntry = entries.findIndex(e => e.id === timeEntryId);
     entries[findTargetEntry].end = DateHelper.getNow();
-    return localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
+    return this.saveTimeEntries(entries);
   }
 
   static getStoredEntries(): Promise<ITimeEntry[]> {
