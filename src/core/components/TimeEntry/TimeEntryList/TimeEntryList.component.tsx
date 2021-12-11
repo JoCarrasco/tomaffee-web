@@ -8,15 +8,25 @@ import { TimeEntryComponent } from '../TimeEntry/TimeEntry.component';
 export const TimeEntryListComponent = () => {
   const [timeEntries, setTimeEntries] = React.useState<ITimeEntry[] | null>(null);
   const [timeEntryId, setTimeEntryId] = React.useState<number | null>(null);
+  const [canUpdateTimeEntries, setCanUpdateTimeEntries] = React.useState<boolean>(true);
   const [nowInDate, setNowInDate] = React.useState<Date>(new Date());
   const [timeServiceSubscription, setTimeServiceSubscription] = React.useState<Subscription | null>(null);
   const [changeRequestSubscription, setChangeRequestSubscription] = React.useState<Subscription | null>(null);
+  
+  React.useEffect(() => {
+    if (canUpdateTimeEntries) {
+      ApiService.getUserTimeEntries().then((storedEntries) => {
+        setTimeEntries(storedEntries);
+        setCanUpdateTimeEntries(false);
+      });
+    }
+  }, [timeEntryId, timeEntries]);
 
   React.useLayoutEffect(() => {
-    ApiService.getUserTimeEntries().then((storedEntries) => {
-      setTimeEntries(storedEntries);
-    });
+    setSubscriptions();
+  }, [])
 
+  function setSubscriptions() {
     if (!timeServiceSubscription) {
       setTimeServiceSubscription(
         TimeEntryService.getWatcher().subscribe((info) => {
@@ -32,24 +42,38 @@ export const TimeEntryListComponent = () => {
         })
       );
     }
-
+  
     if (!changeRequestSubscription) {
       setChangeRequestSubscription(TimeEntryService.getChangeRequests().subscribe((changes) => {
-        if (changes !== null && timeEntries !== null) {
-          const ids = changes.map((c) => c.id);
-          ApiService.getTimeEntriesByIds(ids).then((requestedEntries) => {
-            requestedEntries.forEach((entry) => {
-              const copyEntries = timeEntries;
-              const targetTimeEntryIndex = copyEntries.findIndex(t => t.id === entry.id);
-              copyEntries[targetTimeEntryIndex] = entry;
-              setTimeEntries(copyEntries);
-              TimeEntryService.closeChangeRequest();
-            })
+        if (changes !== null && changes?.length > 0) {
+          setCanUpdateTimeEntries(true);
+          ApiService.getUserTimeEntries().then((storedEntries) => {
+            setTimeEntries(storedEntries);
+            setCanUpdateTimeEntries(false);
+            TimeEntryService.closeChangeRequest();
           });
         }
+
+        // NOTE: Use this code in order to provide a more efficient render! 
+
+        // if (changes !== null && timeEntries !== null) {
+        //   const ids = changes.map((c) => c.id);
+        //   if (ids.length > 0) {
+        //     setCanUpdateTimeEntries(true);
+        //   }
+          // ApiService.getTimeEntriesByIds(ids).then((requestedEntries) => {
+          //   requestedEntries.forEach((entry) => {
+          //     const copyEntries = timeEntries;
+          //     const targetTimeEntryIndex = copyEntries.findIndex(t => t.id === entry.id);
+          //     copyEntries[targetTimeEntryIndex] = entry;
+          //     setTimeEntries(copyEntries);
+          //     TimeEntryService.closeChangeRequest();
+          //   })
+          // });
+        // }
       }));
     }
-  }, []);
+  }
 
   function getTimeEntriesTemplate() {
     if (timeEntries === null) {

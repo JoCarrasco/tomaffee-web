@@ -1,7 +1,7 @@
 import React from 'react';
 import { DateHelper } from '../../../classes/date-helper.class';
 import  TimePicker from 'react-time-picker/dist/entry.nostyle'; 
-import './TimeEntryPicker.component.scss';
+import './TimeEntryPicker.style.scss';
 
 interface TimeEntryPickerComponentProps {
   start: Date;
