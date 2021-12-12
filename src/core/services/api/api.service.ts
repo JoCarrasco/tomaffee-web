@@ -17,6 +17,10 @@ export class ApiService {
   static getTimeEntryById(timeEntryId: number): Promise<ITimeEntry | undefined> {
     return ApiMock.getTimeEntryById(timeEntryId);
   }
+
+  static getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
+    return ApiMock.getRelevantEntries(numberOfDatesFromNow, currentDate);
+  }
   
   static removeTimeEntry(id: number): Promise<void> {
     return ApiMock.removeTimeEntry(id);

@@ -9,13 +9,22 @@ import './TimeEntry.style.scss';
 interface ITimeEntryComponentProps {
   timeEntry: ITimeEntry;
   isOnGoing: boolean;
+  enableSelection?: boolean;
   now?: Date;
   onTimeEntryStop?: (...args: any[]) => any;
 }
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(false);
   
+  const handleChange = () => {
+    const id = props.timeEntry.id;
+    const newValue = !checked;
+    newValue ? TimeEntryService.addTimeEntryToSelection(id) : TimeEntryService.removeTimeEntryFromSelection(id);
+    setChecked(!checked);
+  };
+
   async function stopTimeEntrySession() {
     await TimeEntryService.stop();
     if (props.onTimeEntryStop) {
@@ -26,6 +35,15 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   async function createNewEntry() {
     TimeEntryService.initWithNewTimeEntry();
   }
+
+  const checkbox = () => {
+    if (props.enableSelection) {
+      return (
+        <TimeEntryCheckbox value={checked} onChange={handleChange}/>
+      );
+    }
+    return null;
+  }
   
   return (
     <div className="time-entry-component-wrapper">
@@ -33,12 +51,13 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         onEditionClosed={() => setIsEditing(false)}
         onEditionFinished={() => setIsEditing(false)}/>
       <div className={`time-entry-default ${props.isOnGoing ? 'time-entry-active' : ''}`}>
+        {checkbox()}
         <div className="time-entry-text-info-wrapper">
           <p>{props.timeEntry.title === '' ? 'Add a description' : props.timeEntry.title}</p>
         </div>
         <div className="time-entry-icon-wrapper">
           <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} onClick={() => setIsEditing(true)}/></i>
-          {-
+          {
             props.isOnGoing ?
             <i className="time-entry-stop-icon" onClick={() => stopTimeEntrySession()}>
               <FontAwesomeIcon icon={faStopCircle} />
@@ -51,5 +70,15 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         </div>
       </div>
     </div>
+  );
+};
+
+const TimeEntryCheckbox = ({ value, onChange }: { value: any; onChange: any}) => {
+  return (
+     <div className="time-entry-selection">  
+      <label>
+        <input type="checkbox" checked={value} onChange={onChange} />
+      </label>
+     </div>
   );
 };

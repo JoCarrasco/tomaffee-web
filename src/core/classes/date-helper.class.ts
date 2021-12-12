@@ -13,6 +13,11 @@ export class DateHelper {
     return `${duration.hours}: ${duration.minutes}: ${Math.floor(duration.seconds!)}`;
   }
 
+  static toFriendlyDate(date: Date): string {
+    const convertedDate = DateTime.fromISO(date.toISOString());
+    return convertedDate.toRelativeCalendar() as string;
+  }
+
   static getDurationFromStartAndEnd(start: Date, end?: Date): string {
     return this.getDuration(start, end);
   }
@@ -53,6 +58,28 @@ export class DateHelper {
     });
 
     return newFormattedDate.toJSDate();
+  }
+
+  static getLastDaysDates(numberOfDays: number, rawDate: Date) {
+    const dates = [];
+
+    for (let i = 0; i < numberOfDays; i++) {
+      let convertedDate = DateTime.fromISO(rawDate.toISOString());
+      const newDate = convertedDate.day - i;
+      if ( i > 0) {
+        convertedDate = convertedDate.minus({ day: newDate });
+      }
+      const parsedDate = convertedDate.toJSDate();
+      dates.push(parsedDate);
+    }
+
+    return dates;
+  }
+
+  static isSameDay(d1: Date, d2: Date) {
+    const date1 = DateTime.fromISO(d1.toISOString());
+    const date2 = DateTime.fromISO(d2.toISOString());
+    return date1.hasSame(date2, 'day');
   }
 
   static changeReplaceFullDateToDate(timeDate: Date, date: Date) {

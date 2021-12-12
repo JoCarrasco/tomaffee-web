@@ -20,6 +20,10 @@ export class ApiMock {
     return TimeEntryHelper.getTimeEntryById(timeEntryId);
   }
 
+  static getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
+    return TimeEntryHelper.getRelevantEntries(numberOfDatesFromNow, currentDate);
+  }
+
   static getTimeEntriesByIds(ids: number[]): Promise<ITimeEntry[]> {
     return TimeEntryHelper.getTimeEntriesById(ids);
   }
@@ -110,9 +114,23 @@ export class TimeEntryHelper {
   }
 
   static async getTimeEntriesById(ids: number[]) {
+    return (await this.getStoredEntries()).filter((entry) => ids.includes(entry.id));
+  }
+
+  static async getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
+    const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow, currentDate);
     const entries = await this.getStoredEntries();
-    const filteredEntries = entries.filter((entry) => ids.includes(entry.id));
-    return filteredEntries;
+    const formattedEntries = [];
+
+    for (const date of targetDates) {
+      const dayEntries = entries.filter(e => DateHelper.isSameDay(date, e.start));
+      if (dayEntries.length > 0) {
+        formattedEntries.push({ date, entries: dayEntries });
+      }
+    }
+
+    formattedEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
+    return formattedEntries;
   }
 
   static async getTimeEntryById(timeEntryId: number): Promise<ITimeEntry | undefined> {

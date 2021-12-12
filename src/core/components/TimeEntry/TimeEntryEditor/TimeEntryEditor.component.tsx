@@ -17,7 +17,7 @@ interface ITimeEntryEditorProps {
 
 export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
   const [draftTimeEntry, setDraftTimeEntry] = useState<ITimeEntry | undefined>(undefined);
-  
+
   React.useEffect(() => {
     if (props.show) {
       setDraftTimeEntry(props.staticTimeEntry);
@@ -40,7 +40,6 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
         const updateTimeEntry: any = { id };
         editedValues.forEach((e) => updateTimeEntry[e.key] = e.value);
         ApiService.updateTimeEntry(updateTimeEntry).then(() => {
-          // NOTE: Change location of ITimeEntryChangeRequestType 
           TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
           props.onEditionFinished();
         });
@@ -56,7 +55,7 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
       return (
         <TimeEntryEditorFormComponent
           staticTimeEntry={draftTimeEntry}
-          onFinishEditing={handleEditionSubmitionRequest}></TimeEntryEditorFormComponent>
+          onFinishEditing={handleEditionSubmitionRequest} />
       );
     }
   }

@@ -27,11 +27,31 @@ export class TimeEntryService {
   private static watchInterval: NodeJS.Timeout | undefined;
   private static fullWatcher = new BehaviorSubject<ITimeEntryServiceFullWatcher | null>(null);
   private static changeRequest = new BehaviorSubject<ITimeEntryChangeRequest[] | null>(null);
+  private static selectedTimeEntryIds = new BehaviorSubject<number[] | null>(null);
 
   static init() {
     if (!this.isOngoing) {
       this.initWatcher();
     }
+  }
+
+  static addTimeEntryToSelection(id: number) {
+    let selectedIds = this.selectedTimeEntryIds.getValue();
+    selectedIds !== null ? selectedIds.push(id) : selectedIds = [id];
+    this.selectedTimeEntryIds.next(selectedIds);
+  }
+
+  static removeTimeEntryFromSelection(id: number) {
+    const selectedIds = this.selectedTimeEntryIds.getValue();
+    if (selectedIds !== null) {
+      const targetIndex = selectedIds.findIndex(x => x === id);
+      selectedIds.splice(targetIndex, 1);
+      this.selectedTimeEntryIds.next(selectedIds);
+    }
+  }
+
+  static getSelectedTimeEntries() {
+    return this.selectedTimeEntryIds.asObservable();
   }
 
   static getChangeRequests(): Observable<ITimeEntryChangeRequest[] | null> {
