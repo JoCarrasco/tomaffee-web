@@ -36,12 +36,12 @@ export class ApiMock {
     return TimeEntryHelper.isTimeEntryOnGoing();
   }
 
-  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<IBoolResponse> {
+  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<ITimeEntry> {
     return new Promise(async (res, rej) => {
       try {
         const user = this.getOwnUser();
         const now = DateHelper.getNow();
-        const isCreated = await TimeEntryHelper.createNewEntry(
+        const timeEntry = await TimeEntryHelper.createNewEntry(
           user,
           predefinedTimeEntry ? predefinedTimeEntry :
           {
@@ -49,9 +49,7 @@ export class ApiMock {
             title: '',
           }
         );
-        res({
-          result: isCreated,
-        })
+        res(timeEntry);
       } catch (e) {
         rej(e);
       }
@@ -68,25 +66,20 @@ export class ApiMock {
 }
 
 export class TimeEntryHelper {
-  static createNewEntry(user: IUser, timeEntry: ITimeEntryPrimitive): Promise<boolean> {
+  static createNewEntry(user: IUser, timeEntry: ITimeEntryPrimitive): Promise<ITimeEntry> {
     return new Promise(async (res, rej) => {
       try {
-        const isTimeEntryOnGoing = await this.isTimeEntryOnGoing();
-        if (!isTimeEntryOnGoing) {
-          let newEntryId = 0;
-          const storedEntries = await this.getStoredEntries();
-          if (storedEntries.length > 0) {
-            storedEntries.sort((a, b) => b.id - a.id);
-            newEntryId = storedEntries[0].id + 1;
-          }
-    
-          const newEntry: ITimeEntry = { ...timeEntry, id: newEntryId, owner: user};
-          storedEntries.push(newEntry);
-          this.saveTimeEntries(storedEntries);
-          res(true);
-        } else {
-          res(false);
+        let newEntryId = 0;
+        const storedEntries = await this.getStoredEntries();
+        if (storedEntries.length > 0) {
+          storedEntries.sort((a, b) => b.id - a.id);
+          newEntryId = storedEntries[0].id + 1;
         }
+  
+        const newEntry: ITimeEntry = { ...timeEntry, id: newEntryId, owner: user};
+        storedEntries.push(newEntry);
+        await this.saveTimeEntries(storedEntries);
+        res(newEntry);
       } catch (e) {
         rej(e);
       }
@@ -133,19 +126,22 @@ export class TimeEntryHelper {
       ...updatedTimeEntry
     }
     entries[targetIndex] = timeEntryWithChanges;
-    this.saveTimeEntries(entries);
+    await this.saveTimeEntries(entries);
     return null;
   }
 
-  private static saveTimeEntries(entries: ITimeEntry[]) {
-    return localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
+  private static saveTimeEntries(entries: ITimeEntry[]): Promise<void> {
+    return new Promise((res) => {
+      localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
+      res();
+    });
   }
 
   static async stopTimeEntry(timeEntryId: number): Promise<void> {
     const entries = await this.getStoredEntries();
     const findTargetEntry = entries.findIndex(e => e.id === timeEntryId);
     entries[findTargetEntry].end = DateHelper.getNow();
-    return this.saveTimeEntries(entries);
+    return await this.saveTimeEntries(entries);
   }
 
   static getStoredEntries(): Promise<ITimeEntry[]> {
@@ -161,7 +157,8 @@ export class TimeEntryHelper {
               entry.end = new Date(entry.end);
             }
             return entry;
-          })
+          });
+          entries = entries.sort((e1, e2) => e2.id - e1.id);
         }
         res(entries);
       } catch (e) {

@@ -11,7 +11,15 @@ interface ITimeEntryServiceFullWatcher {
 
 interface ITimeEntryChangeRequest {
   id: number;
+  type: ITimeEntryChangeRequestType;
 }
+
+// NOTE: Change location of ITimeEntryChangeRequestType 
+export enum ITimeEntryChangeRequestType {
+  Creation = 0,
+  Update,
+  Remove
+};
 
 export class TimeEntryService {
   private static isOngoing: boolean = false;
@@ -30,7 +38,7 @@ export class TimeEntryService {
     return this.changeRequest.asObservable();
   }
 
-  static sendChangeRequest(ids:  ITimeEntryChangeRequest[]) {
+  static sendChangeRequest(ids: ITimeEntryChangeRequest[]) {
     this.changeRequest.next(ids);
   }
 
@@ -40,7 +48,12 @@ export class TimeEntryService {
 
   static async initWithNewTimeEntry(predefinedTimeEntry?: ITimeEntryPrimitive) {
     if (!this.isOngoing) {
-      await ApiService.createNewEntry(predefinedTimeEntry);
+      const createdTimeEntry = await ApiService.createNewEntry(predefinedTimeEntry);
+      // NOTE: Change location of ITimeEntryChangeRequestType 
+      this.sendChangeRequest([{
+        id: createdTimeEntry.id,
+        type: ITimeEntryChangeRequestType.Creation
+      }]);
       this.initWatcher();
     }
   }

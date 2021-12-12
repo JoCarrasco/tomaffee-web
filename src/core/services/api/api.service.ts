@@ -22,7 +22,7 @@ export class ApiService {
     return ApiMock.getTimeEntriesByIds(ids);
   }
 
-  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<IBoolResponse> {
+  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<ITimeEntry> {
     return ApiMock.createNewEntry(predefinedTimeEntry);
   }
 

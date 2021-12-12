@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { BackdropComponent, ITimeEntryEditorEditedValue, TimeEntryEditorFormComponent } from '../..';
 import { ITimeEntry } from '../../../models/api';
 import { ApiService } from '../../../services/api/api.service';
-import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
+import { TimeEntryService, ITimeEntryChangeRequestType } from '../../../services/time-entry/time-entry.service';
 import './TimeEntryEditor.style.scss';
 
 interface ITimeEntryEditorProps {
@@ -39,7 +39,8 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
       const updateTimeEntry: any = { id };
       editedValues.forEach((e) => updateTimeEntry[e.key] = e.value);
       ApiService.updateTimeEntry(updateTimeEntry).then(() => {
-        TimeEntryService.sendChangeRequest([{ id }]);
+        // NOTE: Change location of ITimeEntryChangeRequestType 
+        TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
         props.onEditionFinished();
       });
     }
