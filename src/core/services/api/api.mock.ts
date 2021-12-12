@@ -28,6 +28,10 @@ export class ApiMock {
     return TimeEntryHelper.updateTimeEntry(updatedTimeEntry);
   }
 
+  static removeTimeEntry(id: number): Promise<void> {
+    return TimeEntryHelper.removeEntry(id);
+  }
+
   static getUserTimeEntries(): Promise<ITimeEntry[]> {
     return TimeEntryHelper.getStoredEntries();
   }
@@ -135,6 +139,13 @@ export class TimeEntryHelper {
       localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
       res();
     });
+  }
+
+  static async removeEntry(id: number): Promise<void> {
+    const entries = await this.getStoredEntries();
+    const targetIndex = entries.findIndex(e => e.id === id);
+    entries.splice(targetIndex, 1);
+    this.saveTimeEntries(entries);
   }
 
   static async stopTimeEntry(timeEntryId: number): Promise<void> {

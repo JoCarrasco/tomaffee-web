@@ -179,4 +179,9 @@ export class TimeEntryService {
     if (fullWatcher.timeEntryId === undefined) return;
     return ApiService.stopTimeEntry(fullWatcher.timeEntryId);
   }
+
+  static async removeTimeEntry(id: number) {
+    await ApiService.removeTimeEntry(id);
+    this.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Remove }])
+  }
 }

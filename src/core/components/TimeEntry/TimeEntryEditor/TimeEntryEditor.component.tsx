@@ -33,16 +33,21 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
     props.onEditionClosed();
   }
 
-  function handleEditionSubmitionRequest(editedValues: ITimeEntryEditorEditedValue[]) {
-    if (editedValues.length > 0) {
-      const id = props.timeEntryId;
-      const updateTimeEntry: any = { id };
-      editedValues.forEach((e) => updateTimeEntry[e.key] = e.value);
-      ApiService.updateTimeEntry(updateTimeEntry).then(() => {
-        // NOTE: Change location of ITimeEntryChangeRequestType 
-        TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
-        props.onEditionFinished();
-      });
+  function handleEditionSubmitionRequest(editedValues: ITimeEntryEditorEditedValue[] | null) {
+    if (editedValues !== null) {
+      if (editedValues.length > 0) {
+        const id = props.timeEntryId;
+        const updateTimeEntry: any = { id };
+        editedValues.forEach((e) => updateTimeEntry[e.key] = e.value);
+        ApiService.updateTimeEntry(updateTimeEntry).then(() => {
+          // NOTE: Change location of ITimeEntryChangeRequestType 
+          TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
+          props.onEditionFinished();
+        });
+      }
+    } else {
+      props.onEditionFinished();
+      TimeEntryService.removeTimeEntry(props.timeEntryId);
     }
   }
 

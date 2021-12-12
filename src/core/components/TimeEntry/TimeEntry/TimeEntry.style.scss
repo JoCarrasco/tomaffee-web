@@ -18,7 +18,13 @@
       }
     }
   }
-  .time-entry-edit-icon {
+  .time-entry-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .time-entry-edit-icon,
+  .time-entry-remove-icon {
     font-size: 20px;
   }
   .time-entry-stop-icon,
