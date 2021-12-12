@@ -2,9 +2,8 @@ import { DateTime } from "luxon";
 
 export class DateHelper {
   static parseToStrOfHoursAndMinutes(date: Date): string {
-    const momentDate = DateTime.fromISO(date.toISOString());
-    const formatedDate = momentDate.toFormat('hh:mm:ss');
-    return formatedDate;
+    const convertedDate = DateTime.fromISO(date.toISOString());
+    return convertedDate.toFormat('HH:mm:ss');
   }
 
   static getDuration(a: Date, b?: Date): string {
@@ -25,5 +24,19 @@ export class DateHelper {
   static getNow() {
     const dateISOString = DateTime.now().setZone(this.getBrowserTimezone()).toISO();
     return new Date(dateISOString);
+  }
+
+  static changeTimeToDate(hour: number, minute: number, second: number, date: Date) {
+    const convertedDate = DateTime.fromISO(date.toISOString());
+    const newFormattedDate = DateTime.fromObject({
+      hour,
+      minute,
+      second,
+      day: convertedDate.day,
+      month: convertedDate.month,
+      year: convertedDate.year
+    })
+
+    return newFormattedDate.toJSDate();
   }
 }

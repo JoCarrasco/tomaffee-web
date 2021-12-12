@@ -1,5 +1,5 @@
 import { DateHelper } from "../../classes/date-helper.class";
-import { IBoolResponse, IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
+import { IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
 import { StorageKey } from "../../static/storage-key.enum";
 import { ApiResponses } from "./api-responses.mock";
 

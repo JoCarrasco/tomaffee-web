@@ -27,7 +27,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   async function createNewEntry() {
     TimeEntryService.initWithNewTimeEntry();
   }
-
+  
   return (
     <div className="time-entry-component-wrapper">
       <TimeEntryEditorComponent show={isEditing} timeEntryId={props.timeEntry.id}
@@ -38,15 +38,8 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
           <p>{props.timeEntry.title === '' ? 'Add a description' : props.timeEntry.title}</p>
         </div>
         <div>
-          <div>
-            <TimeEntryPickerComponent
-            onStartEdit={() => {}}
-            start={props.timeEntry.start} end={props.now ? props.now : props.timeEntry.end} canEdit={false} />
-          </div>
-        </div>
-        <div>
-          <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} onClick={() => setIsEditing(true)}/></i>
-          {
+          <i className="timeentry-edit-icon"><FontAwesomeIcon icon={faEdit} onClick={() => setIsEditing(true)}/></i>
+          {-
             props.isOnGoing ?
             <i className="time-entry-stop-icon" onClick={() => stopTimeEntrySession()}>
               <FontAwesomeIcon icon={faStopCircle} />

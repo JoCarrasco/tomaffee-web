@@ -1,4 +1,4 @@
-import { IUser, IProject, IBoolResponse, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive } from "../../models/api";
+import { IUser, IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive } from "../../models/api";
 import { ApiMock } from "./api.mock";
 
 export class ApiService {
