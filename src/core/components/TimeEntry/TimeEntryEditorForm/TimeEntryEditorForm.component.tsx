@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ITimeEntry } from '../../../models/api';
-import { TimeEntryPickerComponent } from '../TimeEntryPicker/TimeEntryPicker.component';
+import { TimeEntryPickerComponent, TimeEntryPickerOutput } from '../TimeEntryPicker/TimeEntryPicker.component';
 
 interface ITimeEntryEditorFormComponentProps {
   staticTimeEntry: ITimeEntry;
@@ -31,8 +31,11 @@ export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponen
     </div>);
   }
 
-  function handleTimeEntryPickerChange(e: any) {
-    // Do Stuff
+  function handleTimeEntryPickerChange(e: TimeEntryPickerOutput) {
+    if (e) {
+      setStartDate(e.start);
+      setEndDate(e.end);
+    }
   }
 
   function getDescriptionInput() {    
@@ -51,6 +54,9 @@ export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponen
     const editedValues: ITimeEntryEditorEditedValue[] = [];
     if (title !== t.title) {  editedValues.push({ key: 'title', value: title }); }
     if (description !== t.description) { editedValues.push({ key: 'description', value: description }); }
+    if (startDate !== t.start) {editedValues.push({ key: 'start', value: startDate })}
+    if (endDate !== t.end) { editedValues.push({ key: 'end', value: endDate }) }
+    
     props.onFinishEditing(editedValues);
   }
 

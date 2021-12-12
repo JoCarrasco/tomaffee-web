@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
+import { DateHelper } from '../../../classes/date-helper.class';
 import TimePicker from 'react-time-picker/dist/entry.nostyle';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import './TimeEntryPicker.style.scss';
-import { DateHelper } from '../../../classes/date-helper.class';
 
 interface TimeEntryPickerComponentProps {
   start: Date;
   end?: Date;
-  onChange: (...args: any[]) => any
+  onChange: (output: TimeEntryPickerOutput) => any
+};
+
+export interface TimeEntryPickerOutput {
+  start: Date;
+  end: Date;
 }
 
 export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) => {
   const defaultEnd = props.end === undefined ? DateHelper.getNow() : props.end;
   const defaultEndTime = DateHelper.parseToStrOfHoursAndMinutes(defaultEnd);
   const defaultStartTime = DateHelper.parseToStrOfHoursAndMinutes(props.start);
-  console.log(defaultStartTime);
 
   const [start, setStart] = useState(props.start);
   const [startDate, setStartDate] = useState(props.start);
@@ -27,12 +31,21 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
 
   function onPickerClosed() {
     if (props.onChange !== undefined) {
-      const changes = {
-        startTime: parseTimePickerToDate(startTime, start),
-        endTime:  parseTimePickerToDate(endTime, end)
-      };
+      const arrOfTimeChanges: any[] = [
+        { time: startTime, ref: start, date: startDate },
+        { time: endTime, ref: end, date: endDate }
+      ];
 
-      props.onChange(changes);
+      const arrOfFormattedChanges = arrOfTimeChanges.map((change) => {
+        const timeFormmated = parseTimePickerToDate(change.time, change.ref);
+        const dateFormatted = DateHelper.changeReplaceFullDateToDate(timeFormmated, change.date);
+        return dateFormatted;
+      });
+
+      props.onChange({
+        start: arrOfFormattedChanges[0],
+        end: arrOfFormattedChanges[1]
+      });
     }
   }
 

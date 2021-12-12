@@ -26,17 +26,40 @@ export class DateHelper {
     return new Date(dateISOString);
   }
 
-  static changeTimeToDate(hour: number, minute: number, second: number, date: Date) {
+  static getFullDateObjFromDate(date: Date) {
     const convertedDate = DateTime.fromISO(date.toISOString());
+    return {
+      day: convertedDate.day,
+      month: convertedDate.month,
+      year: convertedDate.year
+    }
+  }
+
+  static getTimeObjFromDate(date: Date) {
+    const convertedDate = DateTime.fromISO(date.toISOString());
+    return {
+      hour: convertedDate.hour,
+      minute: convertedDate.minute,
+      second: convertedDate.second
+    }
+  }
+
+  static changeTimeToDate(hour: number, minute: number, second: number, date: Date) {
     const newFormattedDate = DateTime.fromObject({
       hour,
       minute,
       second,
-      day: convertedDate.day,
-      month: convertedDate.month,
-      year: convertedDate.year
-    })
+      ...this.getFullDateObjFromDate(date)
+    });
 
+    return newFormattedDate.toJSDate();
+  }
+
+  static changeReplaceFullDateToDate(timeDate: Date, date: Date) {
+    const newFormattedDate = DateTime.fromObject({
+      ...this.getTimeObjFromDate(timeDate),
+      ...this.getFullDateObjFromDate(date)
+    });
     return newFormattedDate.toJSDate();
   }
 }
