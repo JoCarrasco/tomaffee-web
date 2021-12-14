@@ -1,4 +1,5 @@
 import { IUser, IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive } from "../../models/api";
+import { ITimer } from "../../models/api/responses/timer.model";
 import { ApiMock } from "./api.mock";
 
 export class ApiService {
@@ -8,6 +9,10 @@ export class ApiService {
 
   static getOwnProjects(): IProject[] {
     return ApiMock.getOwnProjects();
+  }
+
+  static getTimerData(): Promise<ITimer> {
+    return ApiMock.getTimerData();
   }
 
   static getProjectById(projectId: number): IProject | undefined {

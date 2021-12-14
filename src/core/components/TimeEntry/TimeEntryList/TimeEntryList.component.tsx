@@ -27,8 +27,8 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
           {props.entries.map((timeEntry, i) => (
             <div>
               <TimeEntryComponent
-                enableSelection={bulkEdit}
                 key={i}
+                enableSelection={bulkEdit}
                 isOnGoing={timeEntry.id === props.currentOngoingTimeEntryId}
                 now={timeEntry.id === props.currentOngoingTimeEntryId ? props.now : undefined}
                 timeEntry={timeEntry}

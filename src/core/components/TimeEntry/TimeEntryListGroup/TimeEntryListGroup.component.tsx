@@ -82,14 +82,13 @@ export const TimeEntryListGroupComponent = () => {
       return (
         <div>
           {timeEntryList.map((timeEntryList, i) => (
-            <div key={i}>
-              <TimeEntryListComponent
-                now={nowInDate}
-                currentOngoingTimeEntryId={timeEntryId}
-                date={timeEntryList.date}
-                entries={timeEntryList.entries}
-              />
-            </div>
+            <TimeEntryListComponent
+              key={i}
+              now={nowInDate}
+              currentOngoingTimeEntryId={timeEntryId}
+              date={timeEntryList.date}
+              entries={timeEntryList.entries}
+            />
           ))}
         </div>
       );

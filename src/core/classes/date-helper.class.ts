@@ -61,19 +61,16 @@ export class DateHelper {
   }
 
   static getLastDaysDates(numberOfDays: number, rawDate: Date) {
-    const dates = [];
+    let dates: Date[] = [];
 
-    for (let i = 0; i < numberOfDays; i++) {
-      let convertedDate = DateTime.fromISO(rawDate.toISOString());
-      const newDate = convertedDate.day - i;
-      if ( i > 0) {
-        convertedDate = convertedDate.minus({ day: newDate });
-      }
-      const parsedDate = convertedDate.toJSDate();
-      dates.push(parsedDate);
+    for (let i = 1; i <= numberOfDays + 2; i++) {
+      let convertedDate: Date | DateTime = (DateTime.fromISO(rawDate.toISOString()));
+      convertedDate = convertedDate.minus({ day: convertedDate.day - i });
+      convertedDate = convertedDate.toJSDate();
+      dates.push(convertedDate as Date);
     }
 
-    return dates;
+    return dates.sort((a, b) => b.getTime() - a.getTime());
   }
 
   static isSameDay(d1: Date, d2: Date) {

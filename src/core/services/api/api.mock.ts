@@ -1,5 +1,6 @@
 import { DateHelper } from "../../classes/date-helper.class";
 import { IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
+import { ITimer } from "../../models/api/responses/timer.model";
 import { StorageKey } from "../../static/storage-key.enum";
 import { ApiResponses } from "./api-responses.mock";
 
@@ -10,6 +11,10 @@ export class ApiMock {
 
   static getOwnProjects(): IProject[] {
     return ApiResponses.ownProjects;
+  }
+
+  static getTimerData(): Promise<ITimer> {
+    return TimeEntryHelper.getTimerData();
   }
 
   static getProjectById(projectId: number): IProject | undefined {
@@ -167,10 +172,15 @@ export class TimeEntryHelper {
   }
 
   static async stopTimeEntry(timeEntryId: number): Promise<void> {
-    const entries = await this.getStoredEntries();
-    const findTargetEntry = entries.findIndex(e => e.id === timeEntryId);
-    entries[findTargetEntry].end = DateHelper.getNow();
-    return await this.saveTimeEntries(entries);
+    this.updateTimeEntry({ id: timeEntryId, end: DateHelper.getNow() })
+  }
+
+  static async getTimerData(): Promise<ITimer> {
+    const storedEntries = await this.getStoredEntries();
+    const targetEntry = storedEntries.find(e => e.end === undefined);
+    return {
+      unfinishedTimeEntry: targetEntry !== undefined ? targetEntry.id : undefined
+    }
   }
 
   static getStoredEntries(): Promise<ITimeEntry[]> {

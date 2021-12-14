@@ -3,6 +3,7 @@ import { DateHelper } from "../../classes/date-helper.class";
 import { TimeEntryServiceConstants } from "./time-entry.service.constants";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ITimeEntryPrimitive } from "../../models/api";
+import { setIntervalAsync, clearIntervalAsync, SetIntervalAsyncTimer } from 'set-interval-async/fixed';
 
 interface ITimeEntryServiceFullWatcher {
   now: Date;
@@ -24,14 +25,14 @@ export enum ITimeEntryChangeRequestType {
 export class TimeEntryService {
   private static isOngoing: boolean = false;
   private static counterInterval: NodeJS.Timeout | undefined;
-  private static watchInterval: NodeJS.Timeout | undefined;
+  private static watchInterval: SetIntervalAsyncTimer | undefined;
   private static fullWatcher = new BehaviorSubject<ITimeEntryServiceFullWatcher | null>(null);
   private static changeRequest = new BehaviorSubject<ITimeEntryChangeRequest[] | null>(null);
   private static selectedTimeEntryIds = new BehaviorSubject<number[] | null>(null);
 
-  static init() {
+  static async init() {
     if (!this.isOngoing) {
-      this.initWatcher();
+      await this.initWatcher();
     }
   }
 
@@ -74,7 +75,7 @@ export class TimeEntryService {
         id: createdTimeEntry.id,
         type: ITimeEntryChangeRequestType.Creation
       }]);
-      this.initWatcher();
+      await this.initWatcher();
     }
   }
 
@@ -82,8 +83,15 @@ export class TimeEntryService {
     return this.fullWatcher.asObservable();
   }
 
-  static stop() {
-    return this.stopWatcher();
+  static async stop() {
+    const fullWatcher = this.fullWatcher.getValue();
+    if (fullWatcher !== null) {
+      const id = fullWatcher.timeEntryId;
+      if (id !== undefined) {
+        await this.stopWatcher();
+        this.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
+      }
+    }
   }
 
   static setTimeEntryEdition(timeEntryId: number): void {
@@ -94,36 +102,20 @@ export class TimeEntryService {
 
   private static setUpdatedData(): Promise<void> {
     return new Promise((res, rej) => {
-      ApiService.isTimeEntryOnGoing().then((isTimeEntryOnGoing) => {
-        if (isTimeEntryOnGoing) {
-          ApiService.getUnfinishedTimeEntry().then((timeEntry) => {
-            if (timeEntry) {
-              const fullWatcher = this.fullWatcher.getValue();
-              const partialWatcherValue = { timeEntryId: timeEntry.id, now: DateHelper.getNow() };
-              this.fullWatcher.next(
-                fullWatcher != null ?
-                { ...fullWatcher, ...partialWatcherValue } :
-                partialWatcherValue
-              );
-              if (!this.isOngoing) {
-                this.isOngoing = true;
-              }
-              res();
-            } else {
-              this.stopWatcher();
-              res();
-            }
-          }).catch((err) => {
-            console.log(err);
-            rej(err);
-          });
-        } else {
-          this.stopWatcher();
+      ApiService.getTimerData().then((timer) => {
+        if (timer.unfinishedTimeEntry !== undefined) {
+          const fullWatcher = this.fullWatcher.getValue();
+          const partialWatcherValue = { timeEntryId: timer.unfinishedTimeEntry, now: DateHelper.getNow() };
+          this.fullWatcher.next(
+            fullWatcher !== null ?
+            { ...fullWatcher, ...partialWatcherValue } :
+            partialWatcherValue
+          );
+          if (!this.isOngoing) {
+            this.isOngoing = true;
+          }
           res();
         }
-      }).catch((e) => {
-        console.error(e);
-        rej(e);
       });
     })
   }
@@ -131,12 +123,10 @@ export class TimeEntryService {
   private static initWatcher(): Promise<void> {
     return new Promise(async (res, rej) => {
       try {
+        await this.initCounter();
+        await this.setUpdatedData();
         if (this.watchInterval === undefined) {
-          await this.initCounter();
-          await this.setUpdatedData();
-          this.watchInterval = setInterval(() => {
-            this.setUpdatedData();
-          }, TimeEntryServiceConstants.watcherPeriod);
+          this.watchInterval = setIntervalAsync(async () => { await this.setUpdatedData() }, TimeEntryServiceConstants.watcherPeriod)
         }
         res();
       } catch (err) {
@@ -149,7 +139,7 @@ export class TimeEntryService {
     return new Promise(async (res, rej) => {
       try {
         if (this.watchInterval) {
-          clearInterval(this.watchInterval);
+          clearIntervalAsync(this.watchInterval);
           this.watchInterval = undefined;
         }
         
@@ -159,7 +149,8 @@ export class TimeEntryService {
         this.fullWatcher.next(null);
         res();
       } catch (e) {
-        rej();
+        console.error(e);
+        rej(e);
       }
     });
   }
@@ -201,6 +192,7 @@ export class TimeEntryService {
   }
 
   static async removeTimeEntry(id: number) {
+    await this.stop();
     await ApiService.removeTimeEntry(id);
     this.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Remove }])
   }
