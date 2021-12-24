@@ -34,6 +34,7 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
   }
 
   function handleEditionSubmitionRequest(editedValues: ITimeEntryEditorEditedValue[] | null) {
+    console.log(editedValues);
     if (editedValues !== null) {
       if (editedValues.length > 0) {
         const id = props.timeEntryId;
@@ -43,6 +44,8 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
           TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
           props.onEditionFinished();
         });
+      } else {
+        props.onEditionFinished();
       }
     } else {
       props.onEditionFinished();

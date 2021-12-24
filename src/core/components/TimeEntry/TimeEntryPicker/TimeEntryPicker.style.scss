@@ -41,3 +41,13 @@
   grid-template-columns: 1fr 1fr;
   text-align: left;
 }
+
+.edit-end-advice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  button {
+    margin-top: 1rem;
+  }
+}

@@ -123,7 +123,7 @@ export class TimeEntryHelper {
   }
 
   static async getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
-    const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow, currentDate);
+    const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
     const entries = await this.getStoredEntries();
     const formattedEntries = [];
 

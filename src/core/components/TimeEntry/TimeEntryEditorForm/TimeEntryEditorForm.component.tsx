@@ -15,12 +15,12 @@ export interface ITimeEntryEditorEditedValue {
 
 export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponentProps) => {
   const defaultDescription = props.staticTimeEntry.description ? props.staticTimeEntry.description : '';
-  const defaultEndDate = props.staticTimeEntry.end ? props.staticTimeEntry.end : DateHelper.getNow();
+  const defaultEndDate = props.staticTimeEntry.end;
 
   const [title, setTitle] = useState<string>(props.staticTimeEntry.title);
   const [description, setDescription] = useState<string>(defaultDescription);
   const [startDate, setStartDate] = useState<Date>(props.staticTimeEntry.start);
-  const [endDate, setEndDate] = useState<Date>(defaultEndDate);
+  const [endDate, setEndDate] = useState<Date | undefined>(defaultEndDate);
 
   function handleChange(e: any, setter: (params: any) => any) {
     setter(e.target.value);

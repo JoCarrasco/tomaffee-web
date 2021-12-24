@@ -53,7 +53,13 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
       <div className={`time-entry-default ${props.isOnGoing ? 'time-entry-active' : ''}`}>
         {checkbox()}
         <div className="time-entry-text-info-wrapper">
-          <p>{props.timeEntry.title === '' ? 'Add a description' : props.timeEntry.title}</p>
+          <p>{props.timeEntry.title === '' ? 'Add a title' : props.timeEntry.title}</p>
+          {
+            props.timeEntry.description !== undefined ?
+            <p className="time-entry-text-description">
+              {props.timeEntry.description}
+            </p> : null
+          }
         </div>
         <div className="time-entry-icon-wrapper">
           <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} onClick={() => setIsEditing(true)}/></i>

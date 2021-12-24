@@ -13,10 +13,12 @@ interface TimeEntryPickerComponentProps {
 
 export interface TimeEntryPickerOutput {
   start: Date;
-  end: Date;
+  end?: Date;
 }
 
 export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) => {
+  const [dateEndIsUndefined, setDateEndIsUndefined] = useState<boolean>(props.end === undefined);
+
   const defaultEnd = props.end === undefined ? DateHelper.getNow() : props.end;
   const defaultEndTime = DateHelper.parseToStrOfHoursAndMinutes(defaultEnd);
   const defaultStartTime = DateHelper.parseToStrOfHoursAndMinutes(props.start);
@@ -32,9 +34,12 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
   function onPickerClosed() {
     if (props.onChange !== undefined) {
       const arrOfTimeChanges: any[] = [
-        { time: startTime, ref: start, date: startDate },
-        { time: endTime, ref: end, date: endDate }
+        { time: startTime, ref: start, date: startDate }
       ];
+
+      if (!dateEndIsUndefined) {
+        arrOfTimeChanges[1] = { time: endTime, ref: end, date: endDate };
+      }
 
       const arrOfFormattedChanges = arrOfTimeChanges.map((change) => {
         const timeFormmated = parseTimePickerToDate(change.time, change.ref);
@@ -44,7 +49,7 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
 
       props.onChange({
         start: arrOfFormattedChanges[0],
-        end: arrOfFormattedChanges[1]
+        end: arrOfFormattedChanges[1] || undefined
       });
     }
   }
@@ -66,6 +71,23 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
     isStart ? setStartDate(e) : setEndDate(e);
   }
 
+  function getEndInput() {
+    if (dateEndIsUndefined) {
+      return (<div className="edit-end-advice">
+        <span>Still running, do you want to stop?</span>
+        <button onClick={() => setDateEndIsUndefined(false)}>Stop Timer</button>
+      </div>);
+    } else {
+      return (
+        <div>
+          <label>End</label>
+          <DatePicker selected={endDate} onChange={(date) => onStartDateChange(date as Date, false)} />
+          <TimePicker value={endTime} maxDetail="second" onClockClose={() => onPickerClosed()} onChange={setEndTime} format="HH:mm:ss"/>
+        </div>
+      );
+    }
+  }
+
   function getInteractiveDisplay() {
     return (  
       <div className="time-entry-picker-modal">
@@ -75,11 +97,7 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
             <DatePicker selected={startDate} onChange={(date) => onStartDateChange(date as Date, true)} />
             <TimePicker value={startTime} maxDetail="second" onClockClose={() => onPickerClosed()} onChange={setStartTime} format="HH:m:s"/>
           </div>
-          <div>
-            <label>End</label>
-            <DatePicker selected={endDate} onChange={(date) => onStartDateChange(date as Date, false)} />
-            <TimePicker value={endTime} maxDetail="second" onClockClose={() => onPickerClosed()} onChange={setEndTime} format="HH:mm:ss"/>
-          </div>
+          {getEndInput()}
         </div>
       </div>
     );

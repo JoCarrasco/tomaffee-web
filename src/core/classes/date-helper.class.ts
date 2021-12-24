@@ -60,14 +60,12 @@ export class DateHelper {
     return newFormattedDate.toJSDate();
   }
 
-  static getLastDaysDates(numberOfDays: number, rawDate: Date) {
+  static getLastDaysDates(numberOfDays: number) {
     let dates: Date[] = [];
-
-    for (let i = 1; i <= numberOfDays + 2; i++) {
-      let convertedDate: Date | DateTime = (DateTime.fromISO(rawDate.toISOString()));
-      convertedDate = convertedDate.minus({ day: convertedDate.day - i });
-      convertedDate = convertedDate.toJSDate();
-      dates.push(convertedDate as Date);
+    for (let i = 0; i < numberOfDays; i++) {
+      const now = DateTime.now();
+      const reducedDate = now.minus({ day: i });
+      dates.push(reducedDate.toJSDate() as Date);
     }
 
     return dates.sort((a, b) => b.getTime() - a.getTime());
