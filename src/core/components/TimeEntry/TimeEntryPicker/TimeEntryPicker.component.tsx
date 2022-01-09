@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { DateHelper } from '../../../classes/date-helper.class';
 import TimePicker from 'react-time-picker/dist/entry.nostyle';
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './TimeEntryPicker.style.scss';
 
 interface TimeEntryPickerComponentProps {
@@ -18,8 +18,7 @@ export interface TimeEntryPickerOutput {
 
 export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) => {
   const [dateEndIsUndefined, setDateEndIsUndefined] = useState<boolean>(props.end === undefined);
-
-  const defaultEnd = props.end === undefined ? DateHelper.getNow() : props.end;
+  const defaultEnd = props.end === undefined ? DateHelper.getNow().asDate : props.end;
   const defaultEndTime = DateHelper.parseToStrOfHoursAndMinutes(defaultEnd);
   const defaultStartTime = DateHelper.parseToStrOfHoursAndMinutes(props.start);
 
@@ -31,34 +30,37 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
   const [endDate, setEndDate] = useState(defaultEnd);
   const [endTime, setEndTime] = useState<string>(defaultEndTime);
 
-  function onPickerClosed() {
-    if (props.onChange !== undefined) {
-      const arrOfTimeChanges: any[] = [
-        { time: startTime, ref: start, date: startDate }
-      ];
-
-      if (!dateEndIsUndefined) {
-        arrOfTimeChanges[1] = { time: endTime, ref: end, date: endDate };
-      }
-
-      const arrOfFormattedChanges = arrOfTimeChanges.map((change) => {
-        const timeFormmated = parseTimePickerToDate(change.time, change.ref);
-        const dateFormatted = DateHelper.changeReplaceFullDateToDate(timeFormmated, change.date);
-        return dateFormatted;
-      });
-
-      props.onChange({
-        start: arrOfFormattedChanges[0],
-        end: arrOfFormattedChanges[1] || undefined
-      });
-    }
+  function setEndNow() {
+    setDateEndIsUndefined(false);
+    setEndDate(DateHelper.getNow().asDate);
+    onPickerClosed();
   }
 
-  function parseTimePickerToDate(output: string, date: Date) {
-    const hour = parseInt(output.substr(0, 2), 10);
-    const minute = throwZeroIfIsInvalid(parseInt(output.substr(3, 5), 10));
-    const second = throwZeroIfIsInvalid(parseInt(output.substr(6, 7), 10));
-    const modifiedDate = DateHelper.changeTimeToDate(hour, minute, second, date);
+  function onPickerClosed() {
+    if (props.onChange === undefined) { return false; }
+    const arrOfTimeChanges: any[] = [ { time: startTime, ref: start, date: startDate } ];
+
+    if (dateEndIsUndefined === false) {
+      arrOfTimeChanges[1] = { time: endTime, ref: end, date: endDate };
+    }
+
+    const arrOfFormattedChanges = arrOfTimeChanges.map((change) => {
+      const timeFormated = parseTimePickerToDate(change.time, change.ref);
+      const dateFormatted = DateHelper.assignDate(timeFormated, change.date);
+      return dateFormatted;
+    });
+
+    props.onChange({
+      start: arrOfFormattedChanges[0],
+      end: arrOfFormattedChanges[1] || undefined
+    });
+  }
+
+  function parseTimePickerToDate(dateInTime: string, date: Date): Date {
+    const hour = parseInt(dateInTime.substr(0, 2), 10);
+    const minute = throwZeroIfIsInvalid(parseInt(dateInTime.substr(3, 5), 10));
+    const second = throwZeroIfIsInvalid(parseInt(dateInTime.substr(6, 7), 10));
+    const modifiedDate = DateHelper.modifyTimeInDate(hour, minute, second, date);
     return modifiedDate;
   }
 
@@ -73,10 +75,12 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
 
   function getEndInput() {
     if (dateEndIsUndefined) {
-      return (<div className="edit-end-advice">
-        <span>Still running, do you want to stop?</span>
-        <button onClick={() => setDateEndIsUndefined(false)}>Stop Timer</button>
-      </div>);
+      return (
+        <div className="edit-end-advice">
+          <span>Still running, do you want to stop?</span>
+          <button onClick={() => setEndNow()}>Stop Timer</button>
+        </div>
+      );
     } else {
       return (
         <div>

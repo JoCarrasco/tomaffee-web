@@ -16,7 +16,7 @@ export const TimeEntryListGroupComponent = () => {
   
   React.useEffect(() => {
     if (canUpdateTimeEntries) {
-      ApiService.getRelevantEntries(12, DateHelper.getNow()).then((storedEntries) => {
+      ApiService.getRelevantEntries(12, DateHelper.getNow().asDate).then((storedEntries) => {
         setTimeEntryList(storedEntries);
         setCanUpdateTimeEntries(false);
       });
@@ -48,7 +48,7 @@ export const TimeEntryListGroupComponent = () => {
       setChangeRequestSubscription(TimeEntryService.getChangeRequests().subscribe((changes) => {
         if (changes !== null && changes?.length > 0) {
           setCanUpdateTimeEntries(true);
-          ApiService.getRelevantEntries(12, DateHelper.getNow()).then((storedEntries) => {
+          ApiService.getRelevantEntries(12, DateHelper.getNow().asDate).then((storedEntries) => {
             setTimeEntryList(storedEntries);
             setCanUpdateTimeEntries(false);
             TimeEntryService.closeChangeRequest();

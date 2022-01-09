@@ -53,7 +53,7 @@ export class ApiMock {
     return new Promise(async (res, rej) => {
       try {
         const user = this.getOwnUser();
-        const now = DateHelper.getNow();
+        const now = DateHelper.getNow().asDate;
         const timeEntry = await TimeEntryHelper.createNewEntry(
           user,
           predefinedTimeEntry ? predefinedTimeEntry :
@@ -172,7 +172,7 @@ export class TimeEntryHelper {
   }
 
   static async stopTimeEntry(timeEntryId: number): Promise<void> {
-    this.updateTimeEntry({ id: timeEntryId, end: DateHelper.getNow() })
+    this.updateTimeEntry({ id: timeEntryId, end: DateHelper.getNow().asDate })
   }
 
   static async getTimerData(): Promise<ITimer> {

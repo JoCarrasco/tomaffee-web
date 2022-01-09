@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { DateHelper } from '../../../classes/date-helper.class';
 import { ITimeEntry } from '../../../models/api';
 import { TimeEntryPickerComponent, TimeEntryPickerOutput } from '../TimeEntryPicker/TimeEntryPicker.component';
 

@@ -1,21 +1,33 @@
-import { DateTime } from "luxon";
+import dayjs from 'dayjs';
+import objectSupport from 'dayjs/plugin/objectSupport';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import duration from 'dayjs/plugin/duration';
+
+type DateObject = dayjs.Dayjs;
+dayjs.extend(objectSupport);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(duration);
+
+enum DateHelperFormat {
+  SimpleTime = 'HH:mm:ss'
+}
 
 export class DateHelper {
   static parseToStrOfHoursAndMinutes(date: Date): string {
-    const convertedDate = DateTime.fromISO(date.toISOString());
-    return convertedDate.toFormat('HH:mm:ss');
+    return this.getDateObject(date).format(DateHelperFormat.SimpleTime);
   }
 
   static getDuration(a: Date, b?: Date): string {
-    const dateA = DateTime.fromISO(a.toISOString());
-    const dateB = b ? DateTime.fromISO(b.toISOString()) : DateTime.now().setZone(this.getBrowserTimezone());
-    const duration = dateB.diff(dateA, ['hours', 'minutes', 'seconds']).toObject();
-    return `${duration.hours}: ${duration.minutes}: ${Math.floor(duration.seconds!)}`;
+    const dateA = this.getDateObject(a);
+    const dateB = b !== undefined ? this.getDateObject(b) : this.getNow().asObject;
+    const { hours, minutes, seconds } = dayjs.duration(dateB.diff(dateA));
+    return `${hours()}: ${minutes()}: ${Math.floor(seconds() || 0)}`;
   }
 
   static toFriendlyDate(date: Date): string {
-    const convertedDate = DateTime.fromISO(date.toISOString());
-    return convertedDate.toRelativeCalendar() as string;
+    return this.getDateObject(date).toString() || 'ERROR DATE_INVALID';
   }
 
   static getDurationFromStartAndEnd(start: Date, end?: Date): string {
@@ -26,62 +38,47 @@ export class DateHelper {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
 
-  static getNow() {
-    const dateISOString = DateTime.now().setZone(this.getBrowserTimezone()).toISO();
-    return new Date(dateISOString);
+  static getNow(): { asDate: Date, asObject: DateObject }  { 
+    const now = dayjs(new Date()).tz(this.getBrowserTimezone());
+    return { asDate: now.toDate(), asObject: now };
   }
 
-  static getFullDateObjFromDate(date: Date) {
-    const convertedDate = DateTime.fromISO(date.toISOString());
-    return {
-      day: convertedDate.day,
-      month: convertedDate.month,
-      year: convertedDate.year
-    }
+  static toDateObject(date: Date): { day: number; month: number; year: number } {
+    const { day, month, year } = this.getDateObject(date);
+    return { day: day(), month: month(), year: year() };
   }
 
-  static getTimeObjFromDate(date: Date) {
-    const convertedDate = DateTime.fromISO(date.toISOString());
-    return {
-      hour: convertedDate.hour,
-      minute: convertedDate.minute,
-      second: convertedDate.second
-    }
+  static toTimeObject(date: Date): { hour: number; minute: number; second: number } {
+    const { hour, minute, second } = this.getDateObject(date);
+    return { hour: hour(), minute: minute(), second: second() };
   }
 
-  static changeTimeToDate(hour: number, minute: number, second: number, date: Date) {
-    const newFormattedDate = DateTime.fromObject({
-      hour,
-      minute,
-      second,
-      ...this.getFullDateObjFromDate(date)
-    });
-
-    return newFormattedDate.toJSDate();
+  static modifyTimeInDate(hour: number, minute: number, second: number, date: Date): Date {
+    const obj: unknown = { ...{ hour, minute, second }, ...this.toDateObject(date) };
+    return dayjs(obj as string).toDate();
   }
 
-  static getLastDaysDates(numberOfDays: number) {
+  static getLastDaysDates(numberOfDays: number): Date[] {
     let dates: Date[] = [];
+
     for (let i = 0; i < numberOfDays; i++) {
-      const now = DateTime.now();
-      const reducedDate = now.minus({ day: i });
-      dates.push(reducedDate.toJSDate() as Date);
+      dates.push((this.getNow().asObject).subtract(1, 'day').toDate());
     }
 
     return dates.sort((a, b) => b.getTime() - a.getTime());
   }
 
-  static isSameDay(d1: Date, d2: Date) {
-    const date1 = DateTime.fromISO(d1.toISOString());
-    const date2 = DateTime.fromISO(d2.toISOString());
-    return date1.hasSame(date2, 'day');
+  static isSameDay(d1: Date, d2: Date): boolean {
+    return this.getDateObject(d1).isSame(this.getDateObject(d2), 'day');
   }
 
-  static changeReplaceFullDateToDate(timeDate: Date, date: Date) {
-    const newFormattedDate = DateTime.fromObject({
-      ...this.getTimeObjFromDate(timeDate),
-      ...this.getFullDateObjFromDate(date)
-    });
-    return newFormattedDate.toJSDate();
+  static assignDate(timeDate: Date, date: Date): Date {
+    return dayjs((({ ...this.toTimeObject(timeDate), ...this.toDateObject(date) } as unknown) as string)).toDate();
   }
+
+  private static getDateObject(date: Date): DateObject {
+    return dayjs(date.toISOString());
+  }
+
+  static formats = DateHelperFormat;
 }

@@ -105,7 +105,7 @@ export class TimeEntryService {
       ApiService.getTimerData().then((timer) => {
         if (timer.unfinishedTimeEntry !== undefined) {
           const fullWatcher = this.fullWatcher.getValue();
-          const partialWatcherValue = { timeEntryId: timer.unfinishedTimeEntry, now: DateHelper.getNow() };
+          const partialWatcherValue = { timeEntryId: timer.unfinishedTimeEntry, now: DateHelper.getNow().asDate };
           this.fullWatcher.next(
             fullWatcher !== null ?
             { ...fullWatcher, ...partialWatcherValue } :
@@ -164,7 +164,7 @@ export class TimeEntryService {
             if (fullWatcher !== null) {
               const updatedWatcher: ITimeEntryServiceFullWatcher = {
                 ...fullWatcher,
-                now: DateHelper.getNow()
+                now: DateHelper.getNow().asDate
               }
               this.fullWatcher.next(updatedWatcher);
             }

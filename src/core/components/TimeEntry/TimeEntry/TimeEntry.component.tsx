@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ITimeEntry } from '../../../models/api';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faStopCircle, faPlayCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
 import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEdit, faStopCircle, faPlayCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import './TimeEntry.style.scss';
 
 interface ITimeEntryComponentProps {
@@ -37,12 +37,10 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   }
 
   const checkbox = () => {
-    if (props.enableSelection) {
-      return (
-        <TimeEntryCheckbox value={checked} onChange={handleChange}/>
-      );
-    }
-    return null;
+    if (!props.enableSelection) { return null; }
+    return (
+      <TimeEntryCheckbox value={checked} onChange={handleChange}/>
+    );
   }
   
   return (
