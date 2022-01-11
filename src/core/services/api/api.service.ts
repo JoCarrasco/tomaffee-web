@@ -23,8 +23,8 @@ export class ApiService {
     return ApiMock.getTimeEntryById(timeEntryId);
   }
 
-  static getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
-    return ApiMock.getRelevantEntries(numberOfDatesFromNow, currentDate);
+  static getRelevantEntries(numberOfDatesFromNow: number) {
+    return ApiMock.getRelevantEntries(numberOfDatesFromNow);
   }
   
   static removeTimeEntry(id: number): Promise<void> {

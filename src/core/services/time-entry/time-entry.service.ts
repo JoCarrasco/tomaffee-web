@@ -1,5 +1,5 @@
 import { ApiService } from "../api/api.service";
-import { DateHelper } from "../../classes/date-helper.class";
+import { DateHelper } from "../../classes";
 import { TimeEntryServiceConstants } from "./time-entry.service.constants";
 import { BehaviorSubject, Observable } from "rxjs";
 import { ITimeEntryPrimitive } from "../../models/api";

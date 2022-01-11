@@ -1,5 +1,5 @@
 import React from 'react';
-import { DateHelper } from '../../../classes/date-helper.class';
+import { DateHelper } from '../../../classes';
 import { ITimeEntry } from '../../../models/api';
 import { TimeEntryComponent } from '../TimeEntry/TimeEntry.component';
 import './TimeEntryList.style.scss';

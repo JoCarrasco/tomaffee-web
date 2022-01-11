@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DateHelper } from '../../../classes/date-helper.class';
+import { DateHelper } from '../../../classes';
 import TimePicker from 'react-time-picker/dist/entry.nostyle';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -60,8 +60,7 @@ export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) =
     const hour = parseInt(dateInTime.substr(0, 2), 10);
     const minute = throwZeroIfIsInvalid(parseInt(dateInTime.substr(3, 5), 10));
     const second = throwZeroIfIsInvalid(parseInt(dateInTime.substr(6, 7), 10));
-    const modifiedDate = DateHelper.modifyTimeInDate(hour, minute, second, date);
-    return modifiedDate;
+    return DateHelper.assignDate({ hour, minute, second }, date);
   }
 
   function throwZeroIfIsInvalid(val: any) {

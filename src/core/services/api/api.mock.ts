@@ -1,4 +1,4 @@
-import { DateHelper } from "../../classes/date-helper.class";
+import { DateHelper } from "../../classes";
 import { IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
 import { ITimer } from "../../models/api/responses/timer.model";
 import { StorageKey } from "../../static/storage-key.enum";
@@ -25,8 +25,8 @@ export class ApiMock {
     return TimeEntryHelper.getTimeEntryById(timeEntryId);
   }
 
-  static getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
-    return TimeEntryHelper.getRelevantEntries(numberOfDatesFromNow, currentDate);
+  static getRelevantEntries(numberOfDatesFromNow: number) {
+    return TimeEntryHelper.getRelevantEntries(numberOfDatesFromNow);
   }
 
   static getTimeEntriesByIds(ids: number[]): Promise<ITimeEntry[]> {
@@ -100,19 +100,17 @@ export class TimeEntryHelper {
   }
 
   static async isTimeEntryOnGoing(): Promise<boolean> {
-    let isAnyEntryUnfinished = false;
     const storedEntries = await this.getStoredEntries();
     if (storedEntries.length > 0) {
-      isAnyEntryUnfinished = storedEntries.find(e => e.end === undefined) !== undefined;
+      return storedEntries.find(e => e.end === undefined) !== undefined;
     }
-    return isAnyEntryUnfinished;
+    return false;
   }
 
   static async getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
     const isTimeEntryOnGoing = await this.isTimeEntryOnGoing();
     if (isTimeEntryOnGoing) {
-      const storedEntries = await this.getStoredEntries();
-      return storedEntries.find(e => e.end === undefined);
+      return (await this.getStoredEntries()).find(e => e.end === undefined);
     }
 
     return undefined;
@@ -122,7 +120,7 @@ export class TimeEntryHelper {
     return (await this.getStoredEntries()).filter((entry) => ids.includes(entry.id));
   }
 
-  static async getRelevantEntries(numberOfDatesFromNow: number, currentDate: Date) {
+  static async getRelevantEntries(numberOfDatesFromNow: number) {
     const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
     const entries = await this.getStoredEntries();
     const formattedEntries = [];

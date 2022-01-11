@@ -1,6 +1,5 @@
 import React from 'react';
 import { Subscription } from 'rxjs';
-import { DateHelper } from '../../../classes/date-helper.class';
 import { ITimeEntryList } from '../../../models/api/responses/time-entry-list.model';
 import { ApiService } from '../../../services/api/api.service';
 import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
@@ -16,7 +15,7 @@ export const TimeEntryListGroupComponent = () => {
   
   React.useEffect(() => {
     if (canUpdateTimeEntries) {
-      ApiService.getRelevantEntries(12, DateHelper.getNow().asDate).then((storedEntries) => {
+      ApiService.getRelevantEntries(12).then((storedEntries) => {
         setTimeEntryList(storedEntries);
         setCanUpdateTimeEntries(false);
       });
@@ -48,7 +47,7 @@ export const TimeEntryListGroupComponent = () => {
       setChangeRequestSubscription(TimeEntryService.getChangeRequests().subscribe((changes) => {
         if (changes !== null && changes?.length > 0) {
           setCanUpdateTimeEntries(true);
-          ApiService.getRelevantEntries(12, DateHelper.getNow().asDate).then((storedEntries) => {
+          ApiService.getRelevantEntries(12).then((storedEntries) => {
             setTimeEntryList(storedEntries);
             setCanUpdateTimeEntries(false);
             TimeEntryService.closeChangeRequest();
