@@ -14,10 +14,6 @@ export class DateHelper extends CoreDateHelper {
     return d.format('HH:mm:ss');
   }
 
-  private static toTwoDigits(n: number): string {
-    return n < 10 ? '0' + n : n.toString();
-  }
-
   static toFriendlyDate(date: Date): string {
     return this.getDateObject(date).toString();
   }

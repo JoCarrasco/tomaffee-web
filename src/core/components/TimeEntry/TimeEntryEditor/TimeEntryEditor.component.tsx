@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  BackdropComponent,
-  ITimeEntryEditorEditedValue,
-  TimeEntryEditorFormComponent,
-} from '../..';
 import { ITimeEntry } from '../../../models/api';
 import { TimeEntryService } from '../../../services';
+import { ITimeEntryEditorEditedValue, TimeEntryEditorFormComponent } from '../TimeEntryEditorForm';
+import { ITimeEntryEditorProps } from './TimeEntryEditor.models';
+import { BackdropComponent } from '../../Misc';
 import './TimeEntryEditor.style.scss';
-
-interface ITimeEntryEditorProps {
-  show: boolean;
-  timeEntryId: number;
-  staticTimeEntry?: ITimeEntry;
-  onEditionClosed: () => any;
-  onEditionFinished: () => any;
-}
 
 export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
   const [draftTimeEntry, setDraftTimeEntry] = useState<ITimeEntry | undefined>(undefined);

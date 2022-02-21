@@ -1,19 +1,12 @@
 import React from 'react';
 import { DateHelper } from '../../../classes';
-import { ITimeEntry } from '../../../models/api';
 import { TimeEntryComponent } from '../TimeEntry/TimeEntry.component';
+import { ITimeEntryListComponentProps } from './TimeEntryList.models';
 import './TimeEntryList.style.scss';
-
-interface ITimeEntryListComponentProps {
-  date: Date;
-  entries: ITimeEntry[];
-  now: Date;
-  currentOngoingTimeEntryId?: number | null;
-}
 
 export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
   const [bulkEdit, setBulkEdit] = React.useState<boolean>(false);
-  const [selectedEntries, setSelectedEntries] = React.useState<number[]>([]);
+  // const [selectedEntries, setSelectedEntries] = React.useState<number[]>([]);
   
   function getTimeEntriesTemplate() {
     if (props.entries.length < 1) {
@@ -28,7 +21,7 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
           {props.entries.map((timeEntry, i) => (
             <div>
               <TimeEntryComponent
-                key={i}
+                key={i.toString()}
                 enableSelection={bulkEdit}
                 isOnGoing={timeEntry.id === props.currentOngoingTimeEntryId}
                 now={timeEntry.id === props.currentOngoingTimeEntryId ? props.now : undefined}

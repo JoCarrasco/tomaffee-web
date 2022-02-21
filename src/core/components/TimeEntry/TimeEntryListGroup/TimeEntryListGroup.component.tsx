@@ -17,7 +17,7 @@ export const TimeEntryListGroupComponent = () => {
     if (canUpdateTimeEntries) {
       setupTimeEntries();
     }
-  }, [timeEntryList]);
+  }, [timeEntryList, timeEntryId]);
 
   React.useLayoutEffect(() => {
     setSubscriptions();
@@ -27,11 +27,10 @@ export const TimeEntryListGroupComponent = () => {
     if (!timeServiceSubscription) {
       setTimeServiceSubscription(
         TimerService.watcher.subscribe((info) => {
-          if (info) {
+          if (info !== null) {
             setNowInDate(info.now);
-            const id = info.onGoingEntryId;
-            if (id !== undefined) {
-              setTimeEntryId(id);
+            if (info.onGoingEntryId !== undefined) {
+              setTimeEntryId(info.onGoingEntryId);
             }
           } else {
             setTimeEntryId(null);

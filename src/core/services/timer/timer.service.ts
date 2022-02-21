@@ -34,7 +34,7 @@ export class TimerService extends TimerCoreService {
   static async stop(): Promise<void> {
     const watcher = this.watcher$.getValue();
     if (watcher !== null) {
-      if (watcher.onGoingEntryId) {
+      if (watcher.onGoingEntryId !== undefined) {
         await TimeEntryService.stopTimeEntry(watcher.onGoingEntryId);
       }
     }
@@ -64,44 +64,37 @@ export class TimerService extends TimerCoreService {
 
   private static updateWatcherEntry(timeEntryId: number): void {
     const watcher = this.watcher$.getValue();
+    console.log(watcher);
     if (watcher === null) return;
     this.watcher$.next({ ...watcher, onGoingEntryId: timeEntryId });
   }
 
-  private static setTimeUpdate(): Promise<void> {
-    return new Promise((res, rej) => {
+  private static async setTimeUpdate(): Promise<void> {
+    return new Promise((res) => {
       const val = this.watcher$.getValue();
-      console.log(val);
       if (val !== null) {
         val.now = DateHelper.getNow().asDate;
         this.watcher$.next(val);
-        res();
-      } else {
-        rej();
       }
-    })
-  }
-
-  private static setUpdatedData(): Promise<void> {
-    return new Promise((res, rej) => {
-      ApiMock.getTimerData().then((timer) => {
-        console.log(timer);
-        if (timer.unfinishedEntryId !== undefined) {
-          console.log('PASSED');
-          this.watcher$.next({
-            onGoingEntryId: timer.unfinishedEntryId,
-            now: DateHelper.getNow().asDate,
-          });
-          this.isOngoing$.next(true);
-          res();
-        } else {
-          rej();
-        }
-      }).catch((err) => {
-        rej(err);
-      });
+      res();
     });
   }
 
-
+  private static async setUpdatedData(): Promise<void> {
+    return new Promise(async (res) => {
+      const timer = await ApiMock.getTimerData();
+      const now = DateHelper.getNow().asDate;
+      if (timer.unfinishedEntryId !== undefined) {
+        this.watcher$.next({
+          onGoingEntryId: timer.unfinishedEntryId,
+          now,
+        });
+        this.isOngoing$.next(true);
+      } else {
+        this.watcher$.next({ ...timer, now })
+        this.isOngoing$.next(false);
+      }
+      res();
+    })
+  }
 }

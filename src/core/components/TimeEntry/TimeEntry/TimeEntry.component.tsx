@@ -5,18 +5,8 @@ import { TimeEntryService } from '../../../services/time-entry/time-entry.servic
 import { TimerService } from '../../..';
 import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
 import { DateHelper } from '../../../classes';
-import { ITimeEntry } from '../../../models/api';
+import { ITimeEntryComponentProps } from './TimeEntry.models';
 import './TimeEntry.style.scss';
-
-interface ITimeEntryComponentProps {
-  timeEntry: ITimeEntry;
-  isOnGoing: boolean;
-  enableSelection?: boolean;
-  now?: Date;
-  onTimeEntryStop?: (...args: any[]) => any;
-  onUnselectEntry?: (id: number) => void;
-  onSelectEntry?: (id: number) => void;
-}
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
