@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { ITimeEntry } from '../../../models/api';
-import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
-import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEdit, faStopCircle, faPlayCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
+import { TimerService } from '../../..';
+import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
+import { DateHelper } from '../../../classes';
+import { ITimeEntry } from '../../../models/api';
 import './TimeEntry.style.scss';
 
 interface ITimeEntryComponentProps {
@@ -12,34 +14,34 @@ interface ITimeEntryComponentProps {
   enableSelection?: boolean;
   now?: Date;
   onTimeEntryStop?: (...args: any[]) => any;
+  onUnselectEntry?: (id: number) => void;
+  onSelectEntry?: (id: number) => void;
 }
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
   
-  const handleChange = () => {
-    const id = props.timeEntry.id;
-    const newValue = !checked;
-    newValue ? TimeEntryService.addTimeEntryToSelection(id) : TimeEntryService.removeTimeEntryFromSelection(id);
-    setChecked(!checked);
+  const handleSelectionChange = () => {
+    if (props.onSelectEntry !== undefined && props.onUnselectEntry !== undefined) {
+      const id = props.timeEntry.id;
+      const newValue = !checked;
+      newValue ? props.onSelectEntry(id) : props.onUnselectEntry(id);
+      setChecked(!checked);
+    }
   };
 
   async function stopTimeEntrySession() {
-    await TimeEntryService.stop();
+    await TimerService.stop();
     if (props.onTimeEntryStop) {
       props.onTimeEntryStop(props.timeEntry.id);
     }
   }
 
-  async function createNewEntry() {
-    TimeEntryService.initWithNewTimeEntry();
-  }
-
   const checkbox = () => {
     if (!props.enableSelection) { return null; }
     return (
-      <TimeEntryCheckbox value={checked} onChange={handleChange}/>
+      <TimeEntryCheckbox value={checked} onChange={handleSelectionChange}/>
     );
   }
   
@@ -66,11 +68,14 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
             <i className="time-entry-stop-icon" onClick={() => stopTimeEntrySession()}>
               <FontAwesomeIcon icon={faStopCircle} />
             </i> :
-            <i className="time-entry-start-icon" onClick={() => createNewEntry()}>
+            <i className="time-entry-start-icon" onClick={() => TimerService.start()}>
               <FontAwesomeIcon icon={faPlayCircle} />
             </i>
           }
           <i className="time-entry-remove-icon"><FontAwesomeIcon icon={faTrashAlt} onClick={() => TimeEntryService.removeTimeEntry(props.timeEntry.id)}/></i>
+        </div>
+        <div className='time-entry-display'>
+          {DateHelper.toDurationAsClock(props.timeEntry.start, props.timeEntry.end ? props.timeEntry.end : props.now)}
         </div>
       </div>
     </div>

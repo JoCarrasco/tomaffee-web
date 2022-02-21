@@ -1,3 +1,4 @@
 export enum StorageKey {
-  TimeEntry = 'tm'
+  TimeEntry = 'tm',
+  LocalTimeEntries = 'l-tm'
 }

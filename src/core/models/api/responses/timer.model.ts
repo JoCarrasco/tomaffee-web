@@ -1,3 +1,3 @@
 export interface ITimer {
-  unfinishedTimeEntry?: number;
+  unfinishedEntryId?: number;
 }

@@ -13,7 +13,8 @@ interface ITimeEntryListComponentProps {
 
 export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
   const [bulkEdit, setBulkEdit] = React.useState<boolean>(false);
-
+  const [selectedEntries, setSelectedEntries] = React.useState<number[]>([]);
+  
   function getTimeEntriesTemplate() {
     if (props.entries.length < 1) {
       return (<p>No Time Entries</p>);

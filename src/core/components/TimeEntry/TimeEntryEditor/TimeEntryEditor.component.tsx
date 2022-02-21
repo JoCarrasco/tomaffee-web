@@ -1,10 +1,13 @@
+import React, { useState } from 'react';
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { BackdropComponent, ITimeEntryEditorEditedValue, TimeEntryEditorFormComponent } from '../..';
+import {
+  BackdropComponent,
+  ITimeEntryEditorEditedValue,
+  TimeEntryEditorFormComponent,
+} from '../..';
 import { ITimeEntry } from '../../../models/api';
-import { ApiService } from '../../../services/api/api.service';
-import { TimeEntryService, ITimeEntryChangeRequestType } from '../../../services/time-entry/time-entry.service';
+import { TimeEntryService } from '../../../services';
 import './TimeEntryEditor.style.scss';
 
 interface ITimeEntryEditorProps {
@@ -21,9 +24,11 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
   React.useEffect(() => {
     if (props.show) {
       setDraftTimeEntry(props.staticTimeEntry);
-      ApiService.getTimeEntryById(props.timeEntryId).then((targetTimeEntry) => {
-        setDraftTimeEntry(targetTimeEntry);
-      });
+      TimeEntryService.getTimeEntryById(props.timeEntryId).then(
+        (targetTimeEntry) => {
+          setDraftTimeEntry(targetTimeEntry);
+        },
+      );
     } else {
       setDraftTimeEntry(undefined);
     }
@@ -33,15 +38,15 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
     props.onEditionClosed();
   }
 
-  function handleEditionSubmitionRequest(editedValues: ITimeEntryEditorEditedValue[] | null) {
-    console.log(editedValues);
+  function handleEditionSubmitionRequest(
+    editedValues: ITimeEntryEditorEditedValue[] | null,
+  ) {
     if (editedValues !== null) {
       if (editedValues.length > 0) {
         const id = props.timeEntryId;
         const updateTimeEntry: any = { id };
-        editedValues.forEach((e) => updateTimeEntry[e.key] = e.value);
-        ApiService.updateTimeEntry(updateTimeEntry).then(() => {
-          TimeEntryService.sendChangeRequest([{ id, type: ITimeEntryChangeRequestType.Update }]);
+        editedValues.forEach((e) => (updateTimeEntry[e.key] = e.value));
+        TimeEntryService.updateTimeEntry(updateTimeEntry).then(() => {
           props.onEditionFinished();
         });
       } else {
@@ -58,7 +63,8 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
       return (
         <TimeEntryEditorFormComponent
           staticTimeEntry={draftTimeEntry}
-          onFinishEditing={handleEditionSubmitionRequest} />
+          onFinishEditing={handleEditionSubmitionRequest}
+        />
       );
     }
   }
@@ -70,16 +76,19 @@ export const TimeEntryEditorComponent = (props: ITimeEntryEditorProps) => {
           <div className="time-entry-editor">
             <div className="time-entry-editor-header">
               <span>Editing Time Entry</span>
-              <FontAwesomeIcon icon={faTimesCircle} onClick={() => handleEditionClose()}/>
+              <FontAwesomeIcon
+                icon={faTimesCircle}
+                onClick={() => handleEditionClose()}
+              />
             </div>
             {getForm()}
           </div>
         </BackdropComponent>
       );
     } else {
-      return (<></>);
+      return <></>;
     }
   }
 
   return getWrapper();
-}
+};
