@@ -24,7 +24,7 @@ export class DateHelper extends CoreDateHelper {
   }
 
   static getLastDaysDates(numberOfDays: number): Date[] {
-    let dates: Date[] = [];
+    const dates: Date[] = [];
 
     for (let i = 0; i < numberOfDays; i++) {
       dates.push((this.getNow().asObject).subtract(i, 'day').toDate());

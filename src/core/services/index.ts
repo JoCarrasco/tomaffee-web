@@ -1,2 +1,2 @@
-export * from './time-entry/time-entry.service';
-export * from './timer/timer.service';
+export * from './time-entry';
+export * from './timer';

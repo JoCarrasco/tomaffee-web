@@ -126,17 +126,12 @@ export class TimeEntryHelper {
     const formattedEntries = [];
     if (entries.length > 0) {
       const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
-      console.log('Stored entries', entries);
-      console.log('TARGET DATES', targetDates);
-  
       for (const date of targetDates) {
         const dayEntries = entries.filter(e => DateHelper.isSameDay(date, e.start));
-        console.log(dayEntries);
         if (dayEntries.length > 0) {
           formattedEntries.push({ date, entries: dayEntries });
         }
       }
-      console.log(formattedEntries);
       formattedEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
     }
     return formattedEntries;

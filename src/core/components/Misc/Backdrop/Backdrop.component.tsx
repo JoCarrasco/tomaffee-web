@@ -1,10 +1,6 @@
 import React from 'react';
+import { IBackdropComponentProps } from './Backdrop.models';
 import './Backdrop.style.scss';
-
-interface IBackdropComponentProps {
-  children: any;
-  onOutsideClick: () => any;
-}
 
 export const BackdropComponent = (props: IBackdropComponentProps) => {
   function handleClick(e: any) {
