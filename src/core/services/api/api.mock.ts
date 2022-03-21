@@ -2,7 +2,7 @@ import { DateHelper } from "../../classes";
 import { StorageHelper } from "../../classes/storage/storage.helper.class";
 import { IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
 import { ITimer } from "../../models/api/responses/timer.model";
-import { StorageKey } from "../../static/storage-key.enum";
+import { StorageKey } from "../../static/storage-key.enums";
 import { ApiResponses } from "./api-responses.mock";
 
 export class ApiMock {

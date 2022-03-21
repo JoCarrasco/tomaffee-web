@@ -1,8 +1,8 @@
-import { CoreDateHelper } from "./date-helper.class.core";
+import { DateHelperCore } from "./date-helper-core.class";
 import { DateHelperFormat } from "./date-helper.class.enums";
 import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.class.models";
 
-export class DateHelper extends CoreDateHelper {
+export class DateHelper extends DateHelperCore {
   static parseToStrOfHoursAndMinutes(date: Date): string {
     return this.getDateObject(date).format(DateHelperFormat.SimpleTime);
   }
@@ -11,14 +11,14 @@ export class DateHelper extends CoreDateHelper {
     const dateA = this.getDateObject(a);
     const dateB = b !== undefined ? this.getDateObject(b) : this.getNow().asObject;
     const d = this.lib.duration(dateB.diff(dateA));
-    return d.format('HH:mm:ss');
+    return d.format(DateHelperFormat.SimpleTime);
   }
 
   static toFriendlyDate(date: Date): string {
     return this.getDateObject(date).toString();
   }
 
-  static getNow(): IDateHelperDateOutput { 
+  static getNow(): IDateHelperDateOutput {
     const now: TDateObject = this.lib(new Date()).tz(this.getBrowserTimezone());
     return { asDate: now.toDate(), asObject: now };
   }
@@ -37,8 +37,11 @@ export class DateHelper extends CoreDateHelper {
     return this.getDateObject(d1).isSame(this.getDateObject(d2), 'date');
   }
 
-  static assignDate(timeAsDate: Date | IDateHelperSimpleTimeObj, date: Date): Date {
-    const obj = timeAsDate instanceof Date ? this.toTimeObject(timeAsDate) : timeAsDate;
-    return this.lib((({ ...obj, ...this.toDateObject(date) } as unknown) as string)).toDate();
+  static assignDate(timeObj: IDateHelperSimpleTimeObj, date: Date): any {
+    const obj = this.getDateObject(date);
+    if (timeObj.hour !== undefined) { obj.set('hour', timeObj.hour) }
+    if (timeObj.minute !== undefined) { obj.set('minute', timeObj.minute) }
+    if (timeObj.second !== undefined) { obj.set('second', timeObj.second) }
+    return obj;
   }
 }

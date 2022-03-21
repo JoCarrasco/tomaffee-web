@@ -11,19 +11,19 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
 
-export class CoreDateHelper {
+export class DateHelperCore {
   protected static getDateObject(date: Date): TDateObject {
     return this.lib(date.toISOString());
   }
 
   protected static toDateObject(date: Date): IDateHelperSimpleDateObj {
-    const { day, month, year } = this.getDateObject(date);
-    return { day: day(), month: month(), year: year() };
+    const obj = this.getDateObject(date);
+    return { day: obj.day(), month: obj.month(), year: obj.year() };
   }
 
   protected static toTimeObject(date: Date): IDateHelperSimpleTimeObj {
-    const { hour, minute, second } = this.getDateObject(date);
-    return { hour: hour(), minute: minute(), second: second() };
+    const obj = this.getDateObject(date);
+    return { hour: obj.hour(), minute: obj.minute(), second: obj.second() };
   }
 
   protected static getBrowserTimezone(): string {

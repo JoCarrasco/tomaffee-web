@@ -1,4 +1,4 @@
-import { StorageKey } from "../../static/storage-key.enum";
+import { StorageKey } from "../../static";
 
 export class StorageHelper {
   static get(key: StorageKey, parse = true): any | null {
