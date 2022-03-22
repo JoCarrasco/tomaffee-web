@@ -16,9 +16,9 @@ export class DateHelperCore {
     return this.lib(date.toISOString());
   }
 
-  protected static toDateObject(date: Date): IDateHelperSimpleDateObj {
+  protected static toSimpleDateObject(date: Date): IDateHelperSimpleDateObj {
     const obj = this.getDateObject(date);
-    return { day: obj.day(), month: obj.month(), year: obj.year() };
+    return { date: obj.date(), month: obj.month(), year: obj.year() };
   }
 
   protected static toTimeObject(date: Date): IDateHelperSimpleTimeObj {

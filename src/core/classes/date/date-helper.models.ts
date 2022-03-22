@@ -8,7 +8,7 @@ export interface IDateHelperDateOutput {
 }
 
 export interface IDateHelperSimpleDateObj {
-  day: number;
+  date: number;
   month: number;
   year: number;
 }
