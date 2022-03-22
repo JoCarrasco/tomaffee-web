@@ -3,8 +3,8 @@ import objectSupport from 'dayjs/plugin/objectSupport';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
-import { IDateHelperSimpleDateObj, IDateHelperSimpleTimeObj, TDateObject } from './date-helper.class.models';
-import { DateHelperFormat } from './date-helper.class.enums';
+import { IDateHelperSimpleDateObj, IDateHelperSimpleTimeObj, TDateObject } from './date-helper.models';
+import { DateHelperFormat } from './date-helper.enums';
 
 dayjs.extend(objectSupport);
 dayjs.extend(utc);

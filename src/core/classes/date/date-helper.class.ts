@@ -1,6 +1,6 @@
 import { DateHelperCore } from "./date-helper-core.class";
-import { DateHelperFormat } from "./date-helper.class.enums";
-import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.class.models";
+import { DateHelperFormat } from "./date-helper.enums";
+import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.models";
 
 export class DateHelper extends DateHelperCore {
   static parseToStrOfHoursAndMinutes(date: Date): string {
@@ -37,11 +37,10 @@ export class DateHelper extends DateHelperCore {
     return this.getDateObject(d1).isSame(this.getDateObject(d2), 'date');
   }
 
-  static assignDate(timeObj: IDateHelperSimpleTimeObj, date: Date): any {
-    const obj = this.getDateObject(date);
-    if (timeObj.hour !== undefined) { obj.set('hour', timeObj.hour) }
-    if (timeObj.minute !== undefined) { obj.set('minute', timeObj.minute) }
-    if (timeObj.second !== undefined) { obj.set('second', timeObj.second) }
-    return obj;
+  static assignDate(timeObj: Partial<IDateHelperSimpleTimeObj>, date: Date): Date {
+    if (timeObj.hour !== undefined) {date.setHours(timeObj.hour)}
+    if (timeObj.minute !== undefined) { date.setMinutes(timeObj.minute) }
+    if (timeObj.second !== undefined) {date.setSeconds(timeObj.second) }
+    return date;
   }
 }

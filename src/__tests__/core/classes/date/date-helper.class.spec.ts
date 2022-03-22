@@ -1,7 +1,5 @@
-import { DEFAULT_TIME_REGEX } from '../../../static';
-import { DateHelper } from '../date-helper.class';
-import { DateHelperCore } from '../date-helper-core.class';
-import { DEFAULT_MOCK_DATES as mock } from './date-helper.class.spec.constants';
+import { DateHelperCore, DateHelper, DEFAULT_TIME_REGEX } from '../../../../core';
+import { DEFAULT_MOCK_DATES as mock } from '../../../../mocks';
 
 describe('DateHelper Util Class Test', () => {
   it('parseToStrOfHoursAndMinutes should return a string if date is correct', () => {
@@ -19,11 +17,16 @@ describe('DateHelper Util Class Test', () => {
     const hoursDiffInNumber = parseInt(hoursDiff, 10);
     expect(pastDuration).toMatch(DEFAULT_TIME_REGEX);
     expect(rangeDuration).toMatch(DEFAULT_TIME_REGEX);
-    expect(hoursDiff).toEqual(`0${hoursDiffInNumber}`);
+    expect(pastDuration).not.toBe('');
+    expect(rangeDuration).not.toBe('');
+    expect(hoursDiffInNumber).toEqual(mock.hoursToBeDiff);
   });
 
   it('toFriendlyDate should return correct string format', () => {
-    expect(DateHelper.toFriendlyDate(mock.dateA)).toBe(mock.dateAStringFormat);
+    const date = DateHelper.toFriendlyDate(mock.dateA);
+    expect(typeof date).toBe('string');
+    expect(date).not.toBe('');
+    expect(date).toBe(mock.dateAStringFormat);
   });
 
   it('getNow method should return a very accurate(300ms variation) of current date', () => {
@@ -38,8 +41,8 @@ describe('DateHelper Util Class Test', () => {
   });
 
   it('isSameDay should compare 2 dates and tell if they are on the same day', () => {
-    expect(DateHelper.isSameDay(mock.dateA, mock.dateB)).toBeTruthy();
-    expect(DateHelper.isSameDay(mock.dateA, mock.dateC)).toBeFalsy();
+    expect(DateHelper.isSameDay(mock.dateA, mock.dateA)).toBeTruthy();
+    expect(DateHelper.isSameDay(mock.dateA, mock.dateB)).toBeFalsy();
   });
 
   it('getLastDaysDates should compare return a determined amount of dates', () => {
@@ -61,8 +64,7 @@ describe('DateHelper Util Class Test', () => {
 
   it('assignDate should compare 2 dates and tell if they are on the same day', () => {
     const now = DateHelper.getNow();
-    const newDate = DateHelper.assignDate({ hour: 1, minute: 0, second: 0 }, new Date());
-    console.log(now.asDate, newDate);
-    expect(true).toBeTruthy();
+    const newDate = DateHelper.assignDate({ hour: now.asObject.hour() }, mock.dateA);
+    expect(newDate.getHours()).toEqual(now.asDate.getHours());
   });
 });
