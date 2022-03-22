@@ -1,7 +1,8 @@
 import { DateHelper } from "../../classes";
+import { StorageHelper } from "../../classes/storage/storage.helper.class";
 import { IProject, ITimeEntry, ITimeEntryBareBones, ITimeEntryPrimitive, IUser } from "../../models/api";
 import { ITimer } from "../../models/api/responses/timer.model";
-import { StorageKey } from "../../static/storage-key.enum";
+import { StorageKey } from "../../static/storage-key.enums";
 import { ApiResponses } from "./api-responses.mock";
 
 export class ApiMock {
@@ -121,18 +122,18 @@ export class TimeEntryHelper {
   }
 
   static async getRelevantEntries(numberOfDatesFromNow: number) {
-    const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
     const entries = await this.getStoredEntries();
     const formattedEntries = [];
-
-    for (const date of targetDates) {
-      const dayEntries = entries.filter(e => DateHelper.isSameDay(date, e.start));
-      if (dayEntries.length > 0) {
-        formattedEntries.push({ date, entries: dayEntries });
+    if (entries.length > 0) {
+      const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
+      for (const date of targetDates) {
+        const dayEntries = entries.filter(e => DateHelper.isSameDay(date, e.start));
+        if (dayEntries.length > 0) {
+          formattedEntries.push({ date, entries: dayEntries });
+        }
       }
+      formattedEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
     }
-
-    formattedEntries.sort((a, b) => b.date.getTime() - a.date.getTime());
     return formattedEntries;
   }
 
@@ -157,7 +158,7 @@ export class TimeEntryHelper {
 
   private static saveTimeEntries(entries: ITimeEntry[]): Promise<void> {
     return new Promise((res) => {
-      localStorage.setItem(StorageKey.TimeEntry, JSON.stringify(entries));
+      StorageHelper.set(StorageKey.TimeEntry, entries);
       res();
     });
   }
@@ -177,17 +178,15 @@ export class TimeEntryHelper {
     const storedEntries = await this.getStoredEntries();
     const targetEntry = storedEntries.find(e => e.end === undefined);
     return {
-      unfinishedTimeEntry: targetEntry !== undefined ? targetEntry.id : undefined
+      unfinishedEntryId: targetEntry !== undefined ? targetEntry.id : undefined
     }
   }
 
   static getStoredEntries(): Promise<ITimeEntry[]> {
     return new Promise((res, rej) => {
       try {
-        let entries: ITimeEntry[] = [];
-        const rawStoredEntries = localStorage.getItem(StorageKey.TimeEntry);
-        if (rawStoredEntries !== null) {
-          entries = JSON.parse(rawStoredEntries);
+        let entries: ITimeEntry[] = StorageHelper.get(StorageKey.TimeEntry);
+        if (entries !== null) {
           entries = entries.map((entry) => {
             entry.start = new Date(entry.start);
             if (entry.end !== undefined) {
@@ -197,7 +196,7 @@ export class TimeEntryHelper {
           });
           entries = entries.sort((e1, e2) => e2.id - e1.id);
         }
-        res(entries);
+        res(entries === null ? [] : entries);
       } catch (e) {
         rej(e);
       }

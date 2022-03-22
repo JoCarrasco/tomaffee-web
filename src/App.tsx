@@ -1,9 +1,9 @@
 import React from 'react';
-import { TimeEntryButtonComponent, TimeEntryListGroupComponent, TimeEntryService } from './core';
+import { TimeEntryButtonComponent, TimeEntryListGroupComponent, TimerService } from './core';
 import './App.scss';
 
 function App() {
-  TimeEntryService.init();
+  TimerService.initialize();
   return (
     <div className="App">
       <h6>Tomaffee</h6>

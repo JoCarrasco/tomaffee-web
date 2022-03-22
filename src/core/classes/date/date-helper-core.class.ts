@@ -3,35 +3,34 @@ import objectSupport from 'dayjs/plugin/objectSupport';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
-import { IDateHelperSimpleDateObj, IDateHelperSimpleTimeObj } from '../models';
-import { DateHelperFormat } from '../static';
-import { TDateObject } from '../types';
+import { IDateHelperSimpleDateObj, IDateHelperSimpleTimeObj, TDateObject } from './date-helper.models';
+import { DateHelperFormat } from './date-helper.enums';
 
 dayjs.extend(objectSupport);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(duration);
- 
-export const DateLib = dayjs;
 
-export class CoreDateHelper {
+export class DateHelperCore {
   protected static getDateObject(date: Date): TDateObject {
-    return DateLib(date.toISOString());
+    return this.lib(date.toISOString());
   }
 
-  protected static toDateObject(date: Date): IDateHelperSimpleDateObj {
-    const { day, month, year } = this.getDateObject(date);
-    return { day: day(), month: month(), year: year() };
+  protected static toSimpleDateObject(date: Date): IDateHelperSimpleDateObj {
+    const obj = this.getDateObject(date);
+    return { date: obj.date(), month: obj.month(), year: obj.year() };
   }
 
   protected static toTimeObject(date: Date): IDateHelperSimpleTimeObj {
-    const { hour, minute, second } = this.getDateObject(date);
-    return { hour: hour(), minute: minute(), second: second() };
+    const obj = this.getDateObject(date);
+    return { hour: obj.hour(), minute: obj.minute(), second: obj.second() };
   }
 
   protected static getBrowserTimezone(): string {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
   }
+
+  static readonly lib = dayjs;
 
   static formats = DateHelperFormat;
 }

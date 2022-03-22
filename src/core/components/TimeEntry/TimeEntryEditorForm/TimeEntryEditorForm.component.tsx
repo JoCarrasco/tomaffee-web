@@ -1,25 +1,13 @@
 import React, { useState } from 'react';
-import { ITimeEntry } from '../../../models/api';
-import { TimeEntryPickerComponent, TimeEntryPickerOutput } from '../TimeEntryPicker/TimeEntryPicker.component';
-
-interface ITimeEntryEditorFormComponentProps {
-  staticTimeEntry: ITimeEntry;
-  onFinishEditing: (editedValues: ITimeEntryEditorEditedValue[] | null) => void;
-}
-
-export interface ITimeEntryEditorEditedValue {
-  key: string;
-  value: any;
-}
+import { TimeEntryPickerComponent } from '../TimeEntryPicker/TimeEntryPicker.component';
+import { ITimeEntryPickerOutput } from '../TimeEntryPicker/TimeEntryPicker.models';
+import { ITimeEntryEditorEditedValue, ITimeEntryEditorFormComponentProps } from './TimeEntryEditorForm.models';
 
 export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponentProps) => {
-  const defaultDescription = props.staticTimeEntry.description ? props.staticTimeEntry.description : '';
-  const defaultEndDate = props.staticTimeEntry.end;
-
   const [title, setTitle] = useState<string>(props.staticTimeEntry.title);
-  const [description, setDescription] = useState<string>(defaultDescription);
+  const [description, setDescription] = useState<string>( props.staticTimeEntry.description ? props.staticTimeEntry.description : '');
   const [startDate, setStartDate] = useState<Date>(props.staticTimeEntry.start);
-  const [endDate, setEndDate] = useState<Date | undefined>(defaultEndDate);
+  const [endDate, setEndDate] = useState<Date | undefined>(props.staticTimeEntry.end);
 
   function handleChange(e: any, setter: (params: any) => any) {
     setter(e.target.value);
@@ -32,7 +20,7 @@ export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponen
     </div>);
   }
 
-  function handleTimeEntryPickerChange(e: TimeEntryPickerOutput) {
+  function handleTimeEntryPickerChange(e: ITimeEntryPickerOutput) {
     if (e) {
       setStartDate(e.start);
       setEndDate(e.end);
@@ -54,7 +42,6 @@ export const TimeEntryEditorFormComponent = (props: ITimeEntryEditorFormComponen
 
   function handleSubmitForm(e: any) {
     e.preventDefault();
-    // Original TimeEntry
     const t = props.staticTimeEntry;
     const editedValues: ITimeEntryEditorEditedValue[] = [];
     if (title !== t.title) {  editedValues.push({ key: 'title', value: title }); }

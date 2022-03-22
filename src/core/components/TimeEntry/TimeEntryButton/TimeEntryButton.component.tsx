@@ -1,13 +1,9 @@
 import React from 'react';
-import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
+import { TimerService } from '../../../services';
 
 export const TimeEntryButtonComponent = () => {
-  function createNewTimeEntry() {
-    return TimeEntryService.initWithNewTimeEntry();
-  }
-
   return (
-    <button onClick={() => createNewTimeEntry()}>
+    <button onClick={() => TimerService.start()}>
       Create new Time Entry
     </button>
   );

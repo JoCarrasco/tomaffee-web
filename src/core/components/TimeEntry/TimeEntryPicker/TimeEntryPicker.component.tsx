@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
-import { DateHelper } from '../../../classes';
-import TimePicker from 'react-time-picker/dist/entry.nostyle';
 import DatePicker from 'react-datepicker';
+import TimePicker from 'react-time-picker/dist/entry.nostyle';
+import { ITimeEntryPickerComponentProps } from './TimeEntryPicker.models';
+import { DateHelper } from '../../../classes';
 import 'react-datepicker/dist/react-datepicker.css';
 import './TimeEntryPicker.style.scss';
 
-interface TimeEntryPickerComponentProps {
-  start: Date;
-  end?: Date;
-  onChange: (output: TimeEntryPickerOutput) => any
-};
-
-export interface TimeEntryPickerOutput {
-  start: Date;
-  end?: Date;
-}
-
-export const TimeEntryPickerComponent = (props: TimeEntryPickerComponentProps) => {
+export const TimeEntryPickerComponent = (props: ITimeEntryPickerComponentProps) => {
   const [dateEndIsUndefined, setDateEndIsUndefined] = useState<boolean>(props.end === undefined);
   const defaultEnd = props.end === undefined ? DateHelper.getNow().asDate : props.end;
   const defaultEndTime = DateHelper.parseToStrOfHoursAndMinutes(defaultEnd);

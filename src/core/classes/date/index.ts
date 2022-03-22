@@ -1,5 +1,5 @@
+export * from './date-helper-core.class';
 export * from './date-helper.class';
-export * from './lib';
-export * from './models';
-export * from './static';
-export * from './types';
+export * from './date-helper.models';
+export * from './date-helper.enums';
+
