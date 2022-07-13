@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ITimeEntryComponentProps } from './TimeEntry.models';
+import { ITimeEntryComponentProps, ITimeEntryPropChange } from './TimeEntry.models';
 import { TimeEntryTimeDisplayComponent, TimeEntryControlsComponent, TimeEntryEditorComponent, TimeEntryCheckboxComponent, TimeEntryFieldsWrapperComponent } from './subcomponents';
 import { useNow } from '../../../hooks';
 import './TimeEntry.style.scss';
@@ -17,6 +17,12 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
       setChecked(!checked);
     }
   };
+
+  function handleTimeEntryChanges(change: ITimeEntryPropChange) {
+    if (props.timeEntry[change.key] !== change.value) {
+      props.onTimeEntryChange(props.timeEntry.id, { [change.key]: change.value });
+    }
+  }
 
   const CheckBox = () => {
     if (!props.enableSelection) { return null; }
@@ -44,7 +50,12 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
       <TimeEntryEditor />
       <div className={`time-entry-default ${props.isActive ? 'time-entry-active' : ''}`}>
         <CheckBox />
-        <TimeEntryFieldsWrapperComponent description={props.timeEntry.description} title={props.timeEntry.title}/>
+        <TimeEntryFieldsWrapperComponent
+          description={props.timeEntry.description}
+          title={props.timeEntry.title}
+          allowEdit={props.timeEntry.isEditable}
+          onValueChange={(change) => handleTimeEntryChanges(change)}
+        />
         <TimeEntryControlsComponent
           isActive={props.timeEntry.end === undefined}
           onClickContinue={() => props.onTimeEntryContinue(props.timeEntry.id)}

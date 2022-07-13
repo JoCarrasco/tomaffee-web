@@ -26,6 +26,7 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
                   onTimeEntryRemove={props.onRemove}
                   onTimeEntryContinue={props.onContinue}
                   onTimeEntryStop={props.onStop}
+                  onTimeEntryChange={props.onChange}
                 />
               </div>
             ))}

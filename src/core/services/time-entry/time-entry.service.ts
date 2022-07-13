@@ -42,20 +42,30 @@ export class TimeEntryService {
     }
   }
 
-  static async stopTimeEntry(timeEntryId: string): Promise<void> {
+  static async stopTimeEntry(id: string): Promise<void> {
     try {
-      await TimeEntryHelper.stopTimeEntry(timeEntryId);
+      await TimeEntryHelper.stopTimeEntry(id);
       await this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }
   }
 
-  static async continueTimeEntry(timeEntryId: string): Promise<ITimeEntry | undefined> {
+  static async continueTimeEntry(id: string): Promise<ITimeEntry | undefined> {
     try {
-      const entry = await TimeEntryHelper.continueTimeEntry(timeEntryId);
+      const entry = await TimeEntryHelper.continueTimeEntry(id);
       await this.updateTimeEntries();
       return entry;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  static async updateTimeEntry(id: string, change: Partial<ITimeEntry>) {
+    try {
+      const updatedEntry = await TimeEntryHelper.updateTimeEntry({ ...change, id })
+      await this.updateTimeEntries();
+      return updatedEntry;
     } catch (err) {
       console.error(err);
     }

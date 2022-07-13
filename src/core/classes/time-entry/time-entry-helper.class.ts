@@ -20,8 +20,9 @@ export class TimeEntryHelper {
     return new Promise(async (res, rej) => {
       try {
         const storedEntries = await this.getStoredEntries();
-        console.log(data);
-        const newEntry: ITimeEntry = { title: '', start: DateHelper.getNow().asDate, id: uuidv4()} ;
+        // Note: isEditable prop, should not be setted in front, but should be verifiable 
+        // in the backend, and user should not change that prop.
+        const newEntry: ITimeEntry = { title: '', start: DateHelper.getNow().asDate, id: uuidv4(), isEditable: true } ;
         if (data !== undefined) { newEntry.title = data.title || '' }
         storedEntries.push(newEntry);
         await this.saveTimeEntries(storedEntries);

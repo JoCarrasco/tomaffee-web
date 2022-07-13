@@ -1,5 +1,4 @@
 import { ITimeEntryTag } from ".";
-import { IUser } from ".";
 import { IBase } from "./base.model";
 
 export interface ITimeEntryPrimitive {
@@ -8,7 +7,11 @@ export interface ITimeEntryPrimitive {
   end?: Date;
 }
 
-export interface ITimeEntry extends ITimeEntryPrimitive, IBase {
+export interface ITimeEntryConstrains {
+  isEditable: boolean
+}
+
+export interface ITimeEntry extends ITimeEntryPrimitive, ITimeEntryConstrains, IBase {
   description?: string;
   tags?: ITimeEntryTag[];
 }

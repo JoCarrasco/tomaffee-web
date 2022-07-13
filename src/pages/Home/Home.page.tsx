@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { TimeEntryService, TimeEntryListComponent } from "../../core";
 import { useTimeEntries } from "../../core/hooks";
+import { ITimeEntry } from "../../core/models/api";
 
 function HomePage() {
   const entries = useTimeEntries();
@@ -21,6 +22,10 @@ function HomePage() {
     TimeEntryService.continueTimeEntry(timeEntryId);
   }
 
+  function handleChange(timeEntryId: string, change: Partial<ITimeEntry>) {
+    TimeEntryService.updateTimeEntry(timeEntryId, change);
+  }
+
   return (
     <div className="App">
       <h6>Tomaffee</h6>
@@ -31,6 +36,7 @@ function HomePage() {
         onContinue={handleContinue}
         onStop={handleStop}
         onRemove={handleRemove}
+        onChange={handleChange}
       />
     </div>
   );
