@@ -51,8 +51,8 @@ describe('DateHelper Util Class Test', () => {
     const dates: Date[] = DateHelper.getLastDaysDates(numberOfDates);
     expect(dates.length).toBe(numberOfDates);
 
-    const parsedDates = dates.map((date) => DateHelperCore.lib(date));
-    const datesInNumbers = parsedDates.map((date) => { return { day: date.date() } });
+    const parsedDates = dates.map((date) => DateHelper.toSimpleDateObject(date) );
+    const datesInNumbers = parsedDates.map((date) => { return { day: date.date } });
     expect(datesInNumbers).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ day: todayInNumber }),

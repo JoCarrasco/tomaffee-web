@@ -1,11 +1,13 @@
+import React from "react";
 import { ITimeEntry } from "../../../models/api";
 
 export interface ITimeEntryComponentProps {
   timeEntry: ITimeEntry;
-  isOnGoing: boolean;
+  isActive: boolean;
   enableSelection?: boolean;
-  now?: Date;
-  onTimeEntryStop?: (...args: any[]) => any;
-  onUnselectEntry?: (id: number) => void;
-  onSelectEntry?: (id: number) => void;
+  onTimeEntryStop: (id: string) => any;
+  onTimeEntryRemove: (id: string) => any;
+  onTimeEntryContinue: (id: string) => any;
+  onUnselectEntry?: (id: string) => void;
+  onSelectEntry?: (id: string) => void;
 }

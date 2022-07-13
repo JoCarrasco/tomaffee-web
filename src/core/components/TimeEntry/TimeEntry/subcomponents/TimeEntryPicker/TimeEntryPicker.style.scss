@@ -1,0 +1,53 @@
+.time-entry-picker-default {
+  padding: 3px 5px;
+  transition: all 0.4s;
+  background: transparent;
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0,0.2);
+  }
+}
+
+.react-time-picker__wrapper {
+  button {
+    display: none;
+  }
+}
+.react-time-picker__inputGroup__input {
+  background-color: transparent;
+  width: 3  5px!important;
+  border:none;
+  font-size: 1em;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
+  &.react-time-picker__inputGroup__amPm {
+    width: 45px!important;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.time-entry-picker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: left;
+}
+
+.edit-end-advice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  button {
+    margin-top: 1rem;
+  }
+}

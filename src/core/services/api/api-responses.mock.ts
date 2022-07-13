@@ -3,7 +3,7 @@ import { UserRole } from "../../static/core-enums";
 
 // Mock users coming from API
 
-const MOCK_API_USERS: IUser[] = [
+const MOCK_API_USERS: Partial<IUser>[] = [
   {
     name: 'John Doe',
     email: 'johndoe@email.com',
@@ -23,46 +23,46 @@ const MOCK_API_USERS: IUser[] = [
 
 // Get current used user entity used by the client.
 
-const responseGetOwnUser: IUser = MOCK_API_USERS[0];
+const responseGetOwnUser: Partial<IUser> = MOCK_API_USERS[0];
 
 // Mock projects coming from API
 const MOCK_API_PROJECTS: IProject[] = [
   {
-    id: 0,
+    id: '0',
     name: 'Test Project #1',
     description: 'A project with reason to be',
-    owner: MOCK_API_USERS[2],
+    owner: MOCK_API_USERS[2] as IUser,
     teamMembers: [
       { ...responseGetOwnUser, role: UserRole.Worker },
       { ...MOCK_API_USERS[1], role: UserRole.Worker },
       { ...MOCK_API_USERS[2], role: UserRole.Admin }
-    ]
+    ] as IUser[]
   },
   {
-    id: 1,
+    id: '1',
     name: 'Test Project #2',
     description: 'A project where you are the boss',
-    owner: responseGetOwnUser,
+    owner: responseGetOwnUser as IUser,
     teamMembers: [
       { ...responseGetOwnUser, role: UserRole.Admin },
       { ...MOCK_API_USERS[1], role: UserRole.Worker },
       { ...MOCK_API_USERS[2], role: UserRole.Worker }
-    ]
+    ] as IUser[]
   },
   {
-    id: 2,
+    id: '2',
     name: 'Test Project #3',
     description: 'A project where you are the supervisor',
-    owner: MOCK_API_USERS[2],
+    owner: MOCK_API_USERS[2] as IUser,
     teamMembers: [
       { ...responseGetOwnUser, role: UserRole.Supervisor },
       { ...MOCK_API_USERS[1], role: UserRole.Worker },
       { ...MOCK_API_USERS[2], role: UserRole.Admin }
-    ]
+    ] as IUser[]
   },
 ];
 
-const responseGetProjectById = (projectId: number) => {
+const responseGetProjectById = (projectId: string) => {
   return MOCK_API_PROJECTS.find(p => p.id === projectId);
 }
 

@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEdit, faStopCircle, faPlayCircle, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { TimeEntryService } from '../../../services/time-entry/time-entry.service';
-import { TimerService } from '../../..';
-import { TimeEntryEditorComponent } from '../TimeEntryEditor/TimeEntryEditor.component';
-import { DateHelper } from '../../../classes';
 import { ITimeEntryComponentProps } from './TimeEntry.models';
+import { TimeEntryTimeDisplayComponent, TimeEntryControlsComponent, TimeEntryEditorComponent, TimeEntryCheckboxComponent, TimeEntryFieldsWrapperComponent } from './subcomponents';
+import { useNow } from '../../../hooks';
 import './TimeEntry.style.scss';
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
+  const now = useNow();
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
   
@@ -21,63 +18,40 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   };
 
-  async function stopTimeEntrySession() {
-    await TimerService.stop();
-    if (props.onTimeEntryStop) {
-      props.onTimeEntryStop(props.timeEntry.id);
-    }
-  }
-
-  const checkbox = () => {
+  const CheckBox = () => {
     if (!props.enableSelection) { return null; }
     return (
-      <TimeEntryCheckbox value={checked} onChange={handleSelectionChange}/>
+      <TimeEntryCheckboxComponent value={checked} onChange={handleSelectionChange}/>
     );
+  }
+
+  const TimeEntryEditor = () => {
+    if (isEditing) {
+      return (
+        <TimeEntryEditorComponent
+          show={true}
+          timeEntryId={props.timeEntry.id}
+          onEditionClosed={() => setIsEditing(false)}
+          onEditionFinished={() => setIsEditing(false)} />
+      );
+    }
+
+    return null;
   }
   
   return (
     <div className="time-entry-component-wrapper">
-      <TimeEntryEditorComponent show={isEditing} timeEntryId={props.timeEntry.id}
-        onEditionClosed={() => setIsEditing(false)}
-        onEditionFinished={() => setIsEditing(false)}/>
-      <div className={`time-entry-default ${props.isOnGoing ? 'time-entry-active' : ''}`}>
-        {checkbox()}
-        <div className="time-entry-text-info-wrapper">
-          <p>{props.timeEntry.title === '' ? 'Add a title' : props.timeEntry.title}</p>
-          {
-            props.timeEntry.description !== undefined ?
-            <p className="time-entry-text-description">
-              {props.timeEntry.description}
-            </p> : null
-          }
-        </div>
-        <div className="time-entry-icon-wrapper">
-          <i className="time-entry-edit-icon"><FontAwesomeIcon icon={faEdit} onClick={() => setIsEditing(true)}/></i>
-          {
-            props.isOnGoing ?
-            <i className="time-entry-stop-icon" onClick={() => stopTimeEntrySession()}>
-              <FontAwesomeIcon icon={faStopCircle} />
-            </i> :
-            <i className="time-entry-start-icon" onClick={() => TimerService.start()}>
-              <FontAwesomeIcon icon={faPlayCircle} />
-            </i>
-          }
-          <i className="time-entry-remove-icon"><FontAwesomeIcon icon={faTrashAlt} onClick={() => TimeEntryService.removeTimeEntry(props.timeEntry.id)}/></i>
-        </div>
-        <div className='time-entry-display'>
-          {DateHelper.toDurationAsClock(props.timeEntry.start, props.timeEntry.end ? props.timeEntry.end : props.now)}
-        </div>
+      <TimeEntryEditor />
+      <div className={`time-entry-default ${props.isActive ? 'time-entry-active' : ''}`}>
+        <CheckBox />
+        <TimeEntryFieldsWrapperComponent description={props.timeEntry.description} title={props.timeEntry.title}/>
+        <TimeEntryControlsComponent
+          isActive={props.timeEntry.end === undefined}
+          onClickContinue={() => props.onTimeEntryContinue(props.timeEntry.id)}
+          onClickStop={() => props.onTimeEntryStop(props.timeEntry.id)}
+          onClickRemove={() => props.onTimeEntryRemove(props.timeEntry.id)} />
+        <TimeEntryTimeDisplayComponent start={props.timeEntry.start} end={props.timeEntry.end} now={now}/>
       </div>
     </div>
-  );
-};
-
-const TimeEntryCheckbox = ({ value, onChange }: { value: any; onChange: any}) => {
-  return (
-     <div className="time-entry-selection">  
-      <label>
-        <input type="checkbox" checked={value} onChange={onChange} />
-      </label>
-     </div>
   );
 };

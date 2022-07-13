@@ -1,8 +1,9 @@
 import { ITimeEntry } from "../../../models/api";
 
 export interface ITimeEntryListComponentProps {
-  date: Date;
+  forcedActiveTimeEntryId?: string;
   entries: ITimeEntry[];
-  now: Date;
-  currentOngoingTimeEntryId?: number | null;
+  onRemove: (id: string) => any; 
+  onContinue: (id: string) => any;
+  onStop: (id: string) => any;
 }

@@ -1,42 +1,43 @@
 import React from 'react';
-import { DateHelper } from '../../../classes';
+import { TimeEntryHelper } from '../../../classes/time-entry/time-entry-helper.class';
 import { TimeEntryComponent } from '../TimeEntry/TimeEntry.component';
+import { TimeEntryListHeaderComponent } from './subcomponents/TimeEntryListHeader/TimeEntryListHeader.component';
 import { ITimeEntryListComponentProps } from './TimeEntryList.models';
-import './TimeEntryList.style.scss';
 
 export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
   const [bulkEdit, setBulkEdit] = React.useState<boolean>(false);
-  // const [selectedEntries, setSelectedEntries] = React.useState<number[]>([]);
-  
-  function getTimeEntriesTemplate() {
-    if (props.entries.length < 1) {
-      return (<p>No Time Entries</p>);
-    } else {
-      return (
-        <div>
-          <div className="time-entry-list-header">
-            <span>{DateHelper.toFriendlyDate(props.date)}</span>
-            <button onClick={() => setBulkEdit(!bulkEdit)}>Bulk Edit</button>
-          </div>
-          {props.entries.map((timeEntry, i) => (
-            <div>
-              <TimeEntryComponent
-                key={i.toString()}
-                enableSelection={bulkEdit}
-                isOnGoing={timeEntry.id === props.currentOngoingTimeEntryId}
-                now={timeEntry.id === props.currentOngoingTimeEntryId ? props.now : undefined}
-                timeEntry={timeEntry}
-              />
-            </div>
-          ))}
-        </div>
-      );
-    }
+  const timeEntryLists = TimeEntryHelper.parseEntriesToEntriesWithDate(props.entries);
+  const noEntriesTplFallback = props.entries.length === 0 ? (<p>No Time Entries</p>) : null;
+
+  function renderList() {
+    return (
+      <>
+        {noEntriesTplFallback}
+        {timeEntryLists.map((timeEntryList) => (
+          <>
+            <TimeEntryListHeaderComponent date={timeEntryList.date}></TimeEntryListHeaderComponent>
+            {timeEntryList.entries.map((entry) => (
+              <div>
+                <TimeEntryComponent
+                  key={entry.id}
+                  isActive={props.forcedActiveTimeEntryId === undefined && entry.end === undefined}
+                  enableSelection={bulkEdit}
+                  timeEntry={entry}
+                  onTimeEntryRemove={props.onRemove}
+                  onTimeEntryContinue={props.onContinue}
+                  onTimeEntryStop={props.onStop}
+                />
+              </div>
+            ))}
+          </>
+        ))}
+      </>
+    );
   }
 
   return (
     <div>
-      {getTimeEntriesTemplate()}
+      {renderList()}
     </div>
   );
 }

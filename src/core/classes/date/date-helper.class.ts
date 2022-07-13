@@ -14,6 +14,10 @@ export class DateHelper extends DateHelperCore {
     return d.format(DateHelperFormat.SimpleTime);
   }
 
+  static isBetween(target: Date, start: Date, end: Date): boolean {
+    return this.lib(target).isBetween(start, end);
+  }
+
   static toFriendlyDate(date: Date): string {
     return this.getDateObject(date).toString();
   }

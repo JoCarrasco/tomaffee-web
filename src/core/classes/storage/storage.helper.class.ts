@@ -48,7 +48,7 @@ export class StorageHelper {
     return true;
   }
 
-  static removeItemFromArray(key: StorageKey, id: number | string): boolean {
+  static removeItemFromArray(key: StorageKey, id: string | string): boolean {
     if (key === undefined || id === undefined) { return false;}
     const arr = this.get(key);
     if (arr === null || arr.length < 1) { return false; }
@@ -59,7 +59,7 @@ export class StorageHelper {
   }
 
   static remove(key: StorageKey): void {
-    return localStorage.removeItem(key);
+    localStorage.removeItem(key);
   }
 
   private static parse<T>(str: string): T | null {

@@ -1,15 +1,15 @@
 import React from 'react';
-import { TimeEntryButtonComponent, TimeEntryListGroupComponent, TimerService } from './core';
+import { TimeEntryService } from './core';
+import HomePage from './pages/Home/Home.page';
 import './App.scss';
 
+TimeEntryService.init();
+
 function App() {
-  TimerService.initialize();
   return (
     <div className="App">
       <h6>Tomaffee</h6>
-      <p>Push button to create time entry</p>
-      <TimeEntryButtonComponent />
-      <TimeEntryListGroupComponent />
+      <HomePage></HomePage>
     </div>
   );
 }

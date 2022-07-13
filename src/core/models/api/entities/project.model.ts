@@ -1,7 +1,7 @@
 import { IUser } from ".";
+import { IBase } from "./base.model";
 
-export interface IProject {
-  id: number;
+export interface IProject extends IBase {
   name: string;
   description: string | null;
   owner: IUser;

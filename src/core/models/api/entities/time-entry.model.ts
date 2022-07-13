@@ -1,5 +1,6 @@
 import { ITimeEntryTag } from ".";
 import { IUser } from ".";
+import { IBase } from "./base.model";
 
 export interface ITimeEntryPrimitive {
   title: string;
@@ -7,13 +8,7 @@ export interface ITimeEntryPrimitive {
   end?: Date;
 }
 
-export interface ITimeEntryBareBones extends ITimeEntryPrimitive {
-  id: number;
-}
-
-export interface ITimeEntry extends ITimeEntryBareBones {
+export interface ITimeEntry extends ITimeEntryPrimitive, IBase {
   description?: string;
-  taskId?: number;
-  owner: IUser;
   tags?: ITimeEntryTag[];
 }

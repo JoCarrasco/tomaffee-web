@@ -1,0 +1,10 @@
+.time-entry-text-info-wrapper {
+  text-align: left;
+  input.time-entry-input-edit {
+    border:none;
+    font-size: 1em;
+    &:focus {
+      outline: none;
+    }
+  }
+}

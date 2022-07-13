@@ -1,57 +1,63 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ITimeEntry, ITimeEntryPrimitive, ITimeEntryBareBones } from '../../models/api';
-import { ApiMock } from '../api/api.mock';
-
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { TimeEntryHelper } from '../../classes/time-entry/time-entry-helper.class';
+import { ITimeEntry } from '../../models/api';
 export class TimeEntryService {
-  private static updateFlag$ = new BehaviorSubject<boolean>(false);
-  public static readonly updateFlag: Observable<boolean> = this.updateFlag$.asObservable();
-
-  static setUpdateFlag(value: boolean) {
-    this.updateFlag$.next(value);
-  }
-
-  static getTimeEntryById(timeEntryId: number): Promise<ITimeEntry | undefined> {
-    return ApiMock.getTimeEntryById(timeEntryId);
-  }
-
-  static getRelevantEntries(numberOfDatesFromNow: number) {
-    return ApiMock.getRelevantEntries(numberOfDatesFromNow);
-  }
+  private static timeEntries$ = new BehaviorSubject<ITimeEntry[]>([]);
+  public static timeEntries: Observable<ITimeEntry[]> = this.timeEntries$.asObservable();
   
-  static removeTimeEntry(id: number): Promise<void> {
-    return ApiMock.removeTimeEntry(id);
+  private static isInitialized: boolean = false;
+  private static numberOfDatesFromNow = 14;
+  private static subscription: Subscription;
+
+  static init() {
+    if (!this.isInitialized) {
+      this.updateTimeEntries();
+      this.isInitialized = true;
+    }
   }
 
-  static getTimeEntriesByIds(ids: number[]): Promise<ITimeEntry[]> {
-    return ApiMock.getTimeEntriesByIds(ids);
+  private static async updateTimeEntries(): Promise<void> {
+    try {
+      this.timeEntries$.next(await TimeEntryHelper.getTimeEntriesByDays(this.numberOfDatesFromNow));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  static createNewEntry(predefinedTimeEntry?: ITimeEntryPrimitive): Promise<ITimeEntry> {
-    return ApiMock.createNewEntry(predefinedTimeEntry);
+  static async createNewEntry() {
+    await TimeEntryHelper.createNewEntry();
+    await this.updateTimeEntries();
   }
 
-  static getUserTimeEntries(): Promise<ITimeEntry[]> {
-    return ApiMock.getUserTimeEntries();
+  static kill() {
+    this.subscription.unsubscribe();
   }
 
-  static isTimeEntryOnGoing(): Promise<boolean> {
-    return ApiMock.isTimeEntryOnGoing();
+  static async removeTimeEntry(id: string): Promise<void> {
+    try {
+      await TimeEntryHelper.removeEntry(id);
+      await this.updateTimeEntries();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  static stopTimeEntry(timeEntryId: number): Promise<void> {  
-    this.setUpdateFlag(true);
-    return ApiMock.stopTimeEntry(timeEntryId);
+  static async stopTimeEntry(timeEntryId: string): Promise<void> {
+    try {
+      await TimeEntryHelper.stopTimeEntry(timeEntryId);
+      await this.updateTimeEntries();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
-  static getUserStoredEntries(): Promise<ITimeEntry[]> {
-    return ApiMock.getUserTimeEntries();
-  }
-
-  static getUnfinishedTimeEntry(): Promise<ITimeEntry | undefined> {
-    return ApiMock.getUnfinishedTimeEntry();
-  }
-
-  static updateTimeEntry(updatedTimeEntry: Partial<ITimeEntryBareBones>): Promise<null> {
-    return ApiMock.updateTimeEntry(updatedTimeEntry);
+  static async continueTimeEntry(timeEntryId: string): Promise<ITimeEntry | undefined> {
+    try {
+      const entry = await TimeEntryHelper.continueTimeEntry(timeEntryId);
+      await this.updateTimeEntries();
+      return entry;
+    } catch (err) {
+      console.error(err);
+    }
   }
 }
