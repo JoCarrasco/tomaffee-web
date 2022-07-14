@@ -16,7 +16,8 @@ export function TimeEntryTimeDisplayComponent(
   const now = useNow();
 
   function handleStopEdit(val: string, isStart: boolean) {
-    props.onValueChange({ key: isStart ? 'start' : 'end', value: val });
+    // Note: Uncomment when string date parser is ready.
+    // props.onValueChange({ key: isStart ? 'start' : 'end', value: val });
   }
 
   function renderHoursAndMinutes() {
