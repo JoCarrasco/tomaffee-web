@@ -33,13 +33,14 @@ export function TimeEntryTimeDisplayComponent(
       return (
         <div>
           <BasicFormComponent
-            initialValue={DateHelper.parseToStrOfHoursAndMinutes(props.start)}
+            initialValue={DateHelper.toHourMinute12HourClock(props.start)}
             onStopEdit={(val) => handleStopEdit(val, true)}
           />
           <BasicFormComponent
-            initialValue={DateHelper.parseToStrOfHoursAndMinutes(props.end)}
+            initialValue={DateHelper.toHourMinute12HourClock(props.end)}
             onStopEdit={(val) => handleStopEdit(val, false)}
           />
+          <p>{DateHelper.toDurationAsClock(props.start, props.end)}</p>
         </div>
       );
     }

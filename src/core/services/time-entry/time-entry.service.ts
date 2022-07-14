@@ -11,8 +11,9 @@ export class TimeEntryService {
 
   static init() {
     if (!this.isInitialized) {
-      this.updateTimeEntries();
-      this.isInitialized = true;
+      this.updateTimeEntries().then(() => {
+        this.isInitialized = true;
+      });
     }
   }
 
@@ -26,7 +27,7 @@ export class TimeEntryService {
 
   static async createNewEntry() {
     await TimeEntryHelper.createNewEntry();
-    await this.updateTimeEntries();
+    return this.updateTimeEntries();
   }
 
   static kill() {
@@ -36,7 +37,7 @@ export class TimeEntryService {
   static async removeTimeEntry(id: string): Promise<void> {
     try {
       await TimeEntryHelper.removeEntry(id);
-      await this.updateTimeEntries();
+      return this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }
@@ -45,17 +46,16 @@ export class TimeEntryService {
   static async stopTimeEntry(id: string): Promise<void> {
     try {
       await TimeEntryHelper.stopTimeEntry(id);
-      await this.updateTimeEntries();
+      return this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }
   }
 
-  static async continueTimeEntry(id: string): Promise<ITimeEntry | undefined> {
+  static async continueTimeEntry(id: string): Promise<void> {
     try {
-      const entry = await TimeEntryHelper.continueTimeEntry(id);
-      await this.updateTimeEntries();
-      return entry;
+      await TimeEntryHelper.continueTimeEntry(id);
+      return this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }
@@ -63,9 +63,8 @@ export class TimeEntryService {
 
   static async updateTimeEntry(id: string, change: Partial<ITimeEntry>) {
     try {
-      const updatedEntry = await TimeEntryHelper.updateTimeEntry({ ...change, id })
-      await this.updateTimeEntries();
-      return updatedEntry;
+      await TimeEntryHelper.updateTimeEntry({ ...change, id })
+      return this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }

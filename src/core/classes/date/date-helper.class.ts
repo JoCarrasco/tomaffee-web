@@ -1,17 +1,16 @@
 import { DateHelperCore } from "./date-helper-core.class";
-import { DateHelperFormat } from "./date-helper.enums";
 import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.models";
 
 export class DateHelper extends DateHelperCore {
   static parseToStrOfHoursAndMinutes(date: Date): string {
-    return this.getDateObject(date).format(DateHelperFormat.SimpleTime);
+    return this.getDateObject(date).format(this.formats.SimpleTime);
   }
 
   static toDurationAsClock(a: Date, b?: Date): string {
     const dateA = this.getDateObject(a);
     const dateB = b !== undefined ? this.getDateObject(b) : this.getNow().asObject;
     const d = this.lib.duration(dateB.diff(dateA));
-    return d.format(DateHelperFormat.SimpleTime);
+    return d.format(this.formats.SimpleTime);
   }
 
   static isBetween(target: Date, start: Date, end: Date): boolean {
@@ -20,6 +19,10 @@ export class DateHelper extends DateHelperCore {
 
   static toFriendlyDate(date: Date): string {
     return this.getDateObject(date).toString();
+  }
+
+  static toHourMinute12HourClock(date: Date) {
+    return this.getDateObject(date).format('h:mm A');
   }
 
   static getNow(): IDateHelperDateOutput {

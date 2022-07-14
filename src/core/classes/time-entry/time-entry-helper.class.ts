@@ -72,7 +72,7 @@ export class TimeEntryHelper {
     return entries.find(e => e.id === id);
   }
 
-  static async updateTimeEntry(updatedTimeEntry: Partial<ITimeEntry>): Promise<null> {
+  static async updateTimeEntry(updatedTimeEntry: Partial<ITimeEntry>): Promise<void> {
     const entries = await this.getStoredEntries();
     const targetIndex = entries.findIndex(e => e.id === updatedTimeEntry.id);
     const targetTimeEntry = entries[targetIndex];
@@ -82,8 +82,7 @@ export class TimeEntryHelper {
       ...updatedTimeEntry
     }
     entries[targetIndex] = timeEntryWithChanges;
-    await this.saveTimeEntries(entries);
-    return null;
+    return this.saveTimeEntries(entries);
   }
 
   private static saveTimeEntries(entries: ITimeEntry[]): Promise<void> {
@@ -124,7 +123,9 @@ export class TimeEntryHelper {
   }
 
   static async stopTimeEntry(id: string): Promise<void> {
-    this.updateTimeEntry({ id, end: DateHelper.getNow().asDate })
+    const targetEntry = await this.getTimeEntryById(id);
+    await this.updateTimeEntry({ id, end: DateHelper.getNow().asDate });
+    const targetEntry2 = await this.getTimeEntryById(id);
   }
 
   private static getStoredEntries(): Promise<ITimeEntry[]> {
