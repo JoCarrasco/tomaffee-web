@@ -123,9 +123,7 @@ export class TimeEntryHelper {
   }
 
   static async stopTimeEntry(id: string): Promise<void> {
-    const targetEntry = await this.getTimeEntryById(id);
-    await this.updateTimeEntry({ id, end: DateHelper.getNow().asDate });
-    const targetEntry2 = await this.getTimeEntryById(id);
+    return this.updateTimeEntry({ id, end: DateHelper.getNow().asDate });
   }
 
   private static getStoredEntries(): Promise<ITimeEntry[]> {
