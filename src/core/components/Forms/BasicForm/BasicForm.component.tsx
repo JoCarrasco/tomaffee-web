@@ -24,12 +24,17 @@ export const BasicFormComponent = (props: IBasicFormComponentProps) => {
     );
   }
 
+  function handleStopEdit() {
+    props.onStopEdit(val);
+    setIsEditing(false);
+  }
+
   function renderInteractiveInput() {
     return (
       <input
         type="text"
         value={val}
-        onBlur={() => props.onStopEdit(val)}
+        onBlur={handleStopEdit}
         onChange={(e) => setVal(e.target.value)}
         autoFocus
       />
