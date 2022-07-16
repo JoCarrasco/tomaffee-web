@@ -25,6 +25,10 @@ export class DateHelper extends DateHelperCore {
     return this.getDateObject(date).format('h:mm A');
   }
 
+  static toDateFromHourMinute12HourClock(date: Date, clockStr: string) {
+    // Note: Add functionality
+  }
+
   static getNow(): IDateHelperDateOutput {
     const now: TDateObject = this.lib(new Date()).tz(this.getBrowserTimezone());
     return { asDate: now.toDate(), asObject: now };

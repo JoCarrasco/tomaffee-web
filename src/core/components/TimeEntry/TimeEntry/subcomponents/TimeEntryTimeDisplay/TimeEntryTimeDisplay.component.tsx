@@ -16,6 +16,12 @@ export function TimeEntryTimeDisplayComponent(
   const now = useNow();
 
   function handleStopEdit(val: string, isStart: boolean) {
+    if (props.end !== undefined) {
+      DateHelper.toDateFromHourMinute12HourClock(
+        isStart ? props.start : props.end,
+        val,
+      );
+    }
     // Note: Uncomment when string date parser is ready.
     // props.onValueChange({ key: isStart ? 'start' : 'end', value: val });
   }
@@ -29,23 +35,20 @@ export function TimeEntryTimeDisplayComponent(
   }
 
   function renderForm() {
-    if (props.end !== undefined) {
-      return (
-        <div>
-          <BasicFormComponent
-            initialValue={DateHelper.toHourMinute12HourClock(props.start)}
-            onStopEdit={(val) => handleStopEdit(val, true)}
-          />
-          <BasicFormComponent
-            initialValue={DateHelper.toHourMinute12HourClock(props.end)}
-            onStopEdit={(val) => handleStopEdit(val, false)}
-          />
-          <p>{DateHelper.toDurationAsClock(props.start, props.end)}</p>
-        </div>
-      );
-    }
-
-    return null;
+    const end = props.end === undefined ? now : props.end;
+    return (
+      <div>
+        <BasicFormComponent
+          initialValue={DateHelper.toHourMinute12HourClock(props.start)}
+          onStopEdit={(val) => handleStopEdit(val, true)}
+        />
+        <BasicFormComponent
+          initialValue={DateHelper.toHourMinute12HourClock(end)}
+          onStopEdit={(val) => handleStopEdit(val, false)}
+        />
+        <p>{DateHelper.toDurationAsClock(props.start, props.end)}</p>
+      </div>
+    );
   }
 
   function renderTimeDisplay() {
