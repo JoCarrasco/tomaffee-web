@@ -40,7 +40,6 @@ export class DateHelper extends DateHelperCore {
 
     if (timeStr.includes('PM')) {
       let hour = parseInt(timeAsArr[0], 10);
-      console.log('HOUR AS ANUMBER, ', hour);
       hour = hour !== 12 ? hour + 12 : 0;
       hourAsString = hour < 10 ? `0${hour}` : hour.toString();
     }
