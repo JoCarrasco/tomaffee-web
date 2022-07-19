@@ -1,12 +1,14 @@
 import dayjs from 'dayjs';
 import objectSupport from 'dayjs/plugin/objectSupport';
 import timezone from 'dayjs/plugin/timezone';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import isBetween from 'dayjs/plugin/isBetween';
 import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 import { IDateHelperSimpleDateObj, IDateHelperSimpleTimeObj, TDateObject } from './date-helper.models';
 import { DateHelperFormat } from './date-helper.enums';
 
+dayjs.extend(LocalizedFormat)
 dayjs.extend(objectSupport);
 dayjs.extend(utc);
 dayjs.extend(timezone);
