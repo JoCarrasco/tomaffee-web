@@ -32,7 +32,6 @@ function HomePage() {
       <p onClick={() => TimeEntryService.createNewEntry()}>
         Push button to create time entry
       </p>
-      {/* <TimeEntryButtonComponent /> */}
       <TimeEntryListComponent
         entries={entries}
         onContinue={handleContinue}

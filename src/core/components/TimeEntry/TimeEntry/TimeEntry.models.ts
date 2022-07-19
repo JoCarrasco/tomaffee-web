@@ -15,5 +15,5 @@ export interface ITimeEntryComponentProps {
 
 export interface ITimeEntryPropChange {
   key: keyof ITimeEntry;
-  value: string;
+  value: any;
 }

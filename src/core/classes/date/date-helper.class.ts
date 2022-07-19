@@ -1,4 +1,5 @@
 import { DateHelperCore } from "./date-helper-core.class";
+import { DateHelperFormat } from "./date-helper.enums";
 import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.models";
 
 export class DateHelper extends DateHelperCore {
@@ -22,11 +23,31 @@ export class DateHelper extends DateHelperCore {
   }
 
   static toHourMinute12HourClock(date: Date) {
-    return this.getDateObject(date).format('h:mm A');
+    return this.getDateObject(date).format(DateHelperFormat.TwelveHourClockHourMinute);
   }
 
-  static toDateFromHourMinute12HourClock(date: Date, clockStr: string) {
-    // Note: Add functionality
+  static toDateFromHourMinute12HourClock(date: Date, clockStr: string): Date {
+    const timeAsArr = this.convert12HourTo24Hour(clockStr).split(':');
+    const cloneDate = date;
+    cloneDate.setHours(parseInt(timeAsArr[0]));
+    cloneDate.setMinutes(parseInt(timeAsArr[1]));
+    return date;
+  }
+
+  static convert12HourTo24Hour(timeStr: string): string {
+    const timeAsArr = timeStr.split(':');
+    let hourAsString = timeAsArr[0];
+
+    if (timeStr.includes('PM')) {
+      let hour = parseInt(timeAsArr[0], 10);
+      console.log('HOUR AS ANUMBER, ', hour);
+      hour = hour !== 12 ? hour + 12 : 0;
+      hourAsString = hour < 10 ? `0${hour}` : hour.toString();
+    }
+
+    timeAsArr[0] = hourAsString;
+    timeAsArr[1] = timeAsArr[1].slice(0, 2);
+    return timeAsArr.join(':');
   }
 
   static getNow(): IDateHelperDateOutput {

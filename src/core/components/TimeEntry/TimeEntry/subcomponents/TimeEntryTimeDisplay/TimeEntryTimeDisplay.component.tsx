@@ -1,6 +1,7 @@
 import React from 'react';
 import { DateHelper } from '../../../../../classes';
 import { useNow } from '../../../../../hooks';
+import { ITimeEntry } from '../../../../../models/api';
 import { BasicFormComponent } from '../../../../Forms/BasicForm/BasicForm.component';
 import { ITimeEntryPropChange } from '../../TimeEntry.models';
 
@@ -15,15 +16,20 @@ export function TimeEntryTimeDisplayComponent(
 ) {
   const now = useNow();
 
-  function handleStopEdit(val: string, isStart: boolean) {
+  function handleStopEdit(
+    val: string,
+    propName: keyof ITimeEntryTimeDisplayComponentProps,
+  ) {
     if (props.end !== undefined) {
-      DateHelper.toDateFromHourMinute12HourClock(
-        isStart ? props.start : props.end,
+      const updatedDate = DateHelper.toDateFromHourMinute12HourClock(
+        props[propName] as Date,
         val,
       );
+      props.onValueChange({
+        key: propName as keyof ITimeEntry,
+        value: updatedDate,
+      });
     }
-    // Note: Uncomment when string date parser is ready.
-    // props.onValueChange({ key: isStart ? 'start' : 'end', value: val });
   }
 
   function renderHoursAndMinutes() {
@@ -36,17 +42,18 @@ export function TimeEntryTimeDisplayComponent(
 
   function renderForm() {
     const end = props.end === undefined ? now : props.end;
+
     return (
       <div>
         <BasicFormComponent
           initialValue={DateHelper.toHourMinute12HourClock(props.start)}
-          onStopEdit={(val) => handleStopEdit(val, true)}
+          onStopEdit={(val) => handleStopEdit(val, 'start')}
         />
         <BasicFormComponent
           initialValue={DateHelper.toHourMinute12HourClock(end)}
-          onStopEdit={(val) => handleStopEdit(val, false)}
+          onStopEdit={(val) => handleStopEdit(val, 'end')}
         />
-        <p>{DateHelper.toDurationAsClock(props.start, props.end)}</p>
+        <p>{DateHelper.toDurationAsClock(props.start, end)}</p>
       </div>
     );
   }
