@@ -1,8 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { DateHelper } from '../../../../../classes';
 import { BasicFormComponent } from '../../../../Forms';
-import { TimeEntryCalendar } from '../TimeEntryCalendar';
-import { ITimeEntryCalendarHandle } from '../TimeEntryCalendar/TimeEntryCalendar.models';
+import { TimeEntryCalendar } from './subcomponents/TimeEntryCalendar';
+import { ITimeEntryCalendarHandle } from './subcomponents/TimeEntryCalendar/TimeEntryCalendar.models';
 
 interface ITimeEntryPickerProps {
   date: Date;
