@@ -1,5 +1,4 @@
 export * from './TimeEntryButton';
-export * from './TimeEntryEditor';
 export * from './TimeEntryPicker';
 export * from './TimeEntryTimeDisplay';
 export * from './TimeEntryControls';

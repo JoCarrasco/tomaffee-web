@@ -3,14 +3,12 @@ import { ITimeEntryComponentProps, ITimeEntryPropChange } from './TimeEntry.mode
 import {
   TimeEntryTimeDisplayComponent,
   TimeEntryControlsComponent,
-  TimeEntryEditorComponent,
   TimeEntryCheckboxComponent,
   TimeEntryFieldsWrapperComponent,
 } from './subcomponents';
 import './TimeEntry.style.scss';
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [checked, setChecked] = useState<boolean>(false);
 
   const handleSelectionChange = () => {
@@ -45,24 +43,8 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     );
   };
 
-  const TimeEntryEditor = () => {
-    if (isEditing) {
-      return (
-        <TimeEntryEditorComponent
-          show={true}
-          timeEntryId={props.timeEntry.id}
-          onEditionClosed={() => setIsEditing(false)}
-          onEditionFinished={() => setIsEditing(false)}
-        />
-      );
-    }
-
-    return null;
-  };
-
   return (
     <div className="time-entry-component-wrapper">
-      <TimeEntryEditor />
       <div
         className={`time-entry-default ${
           props.isActive ? 'time-entry-active' : ''

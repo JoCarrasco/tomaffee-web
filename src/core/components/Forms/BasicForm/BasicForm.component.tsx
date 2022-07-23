@@ -4,6 +4,7 @@ interface IBasicFormComponentProps {
   initialValue?: string;
   allowEditOnClick?: boolean;
   onStopEdit: (val: string) => any;
+  onFocus?: () => any;
 }
 
 export const BasicFormComponent = (props: IBasicFormComponentProps) => {
@@ -24,6 +25,12 @@ export const BasicFormComponent = (props: IBasicFormComponentProps) => {
     );
   }
 
+  function handleFocus() {
+    if (props.onFocus) {
+      props?.onFocus();
+    }
+  }
+
   function handleStopEdit() {
     props.onStopEdit(val);
     setIsEditing(false);
@@ -35,6 +42,7 @@ export const BasicFormComponent = (props: IBasicFormComponentProps) => {
         type="text"
         value={val}
         onBlur={handleStopEdit}
+        onFocus={handleFocus}
         onChange={(e) => setVal(e.target.value)}
         autoFocus
       />
