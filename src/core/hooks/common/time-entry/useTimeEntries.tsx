@@ -6,7 +6,6 @@ export function useTimeEntries() {
   const entries = useObservable(TimeEntryService.timeEntries);
 
   useEffect(() => {
-    console.log('TRIGGERED');
   }, [entries]);
 
   return entries;
