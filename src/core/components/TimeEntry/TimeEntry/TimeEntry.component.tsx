@@ -11,7 +11,7 @@ import './TimeEntry.style.scss';
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [checked, setChecked] = useState<boolean>(false);
 
-  const handleSelectionChange = () => {
+  const handleSelectionValueChange = () => {
     if (
       props.onSelectEntry !== undefined &&
       props.onUnselectEntry !== undefined
@@ -38,7 +38,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     return (
       <TimeEntryCheckboxComponent
         value={checked}
-        onChange={handleSelectionChange}
+        onValueChange={handleSelectionValueChange}
       />
     );
   };

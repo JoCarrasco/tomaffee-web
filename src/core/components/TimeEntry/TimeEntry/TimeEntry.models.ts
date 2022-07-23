@@ -1,4 +1,3 @@
-import React from "react";
 import { ITimeEntry } from "../../../models/api";
 
 export interface ITimeEntryComponentProps {

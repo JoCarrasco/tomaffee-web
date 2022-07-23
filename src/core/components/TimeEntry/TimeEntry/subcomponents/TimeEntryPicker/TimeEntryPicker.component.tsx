@@ -11,7 +11,7 @@ interface ITimeEntryPickerProps {
 
 export function TimeEntryPicker(props: ITimeEntryPickerProps) {
   const [value, setValue] = useState<Date>(props.date);
-  const calendarComponent = useRef<ITimeEntryCalendarHandle>();
+  const calendarComponent = useRef<ITimeEntryCalendarHandle>(null);
 
   function showCalendar() {
     calendarComponent?.current?.show();
@@ -19,7 +19,7 @@ export function TimeEntryPicker(props: ITimeEntryPickerProps) {
 
   function handleStopEdit(changedDateTimeValue: string | Date) {
     if (props.onStopEdit) {
-      let change = new Date(value);
+      let change = undefined;
       if (typeof changedDateTimeValue === 'string') {
         change = DateHelper.toDateFromHourMinute12HourClock(
           new Date(value.getTime()),

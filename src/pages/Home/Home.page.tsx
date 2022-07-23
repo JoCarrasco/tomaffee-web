@@ -37,7 +37,7 @@ function HomePage() {
         onContinue={handleContinue}
         onStop={handleStop}
         onRemove={handleRemove}
-        onChange={handleChange}
+        onValueChange={handleChange}
       />
     </div>
   );

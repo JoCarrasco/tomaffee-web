@@ -1,8 +1,7 @@
 import React from 'react';
-import { DateHelper } from '../../../../../classes';
 import { useNow } from '../../../../../hooks';
-import { ITimeEntry } from '../../../../../models/api';
 import { ITimeEntryPropChange } from '../../TimeEntry.models';
+import { TimeEntryDurationComponent } from '../TimeEntryDuration';
 import { TimeEntryPicker } from '../TimeEntryPicker';
 
 interface ITimeEntryTimeDisplayComponentProps {
@@ -15,28 +14,18 @@ export function TimeEntryTimeDisplayComponent(
   props: ITimeEntryTimeDisplayComponentProps,
 ) {
   const now = useNow();
+  const end = props.end ? props.end : now;
+  const DurationComponent = (
+    <TimeEntryDurationComponent start={props.start} end={end} />
+  );
 
-  function handleStopEdit(
-    value: Date,
-    propName: keyof ITimeEntryTimeDisplayComponentProps,
-  ) {
-    props.onValueChange({
-      key: propName as keyof ITimeEntry,
-      value,
-    });
-  }
+  const TimeDisplay = props.end ? renderForm() : DurationComponent;
 
-  function renderHoursAndMinutes() {
-    return (
-      <p>
-        {DateHelper.toDurationAsClock(props.start, props.end ? props.end : now)}
-      </p>
-    );
+  function handleStopEdit(value: Date, propName: 'start' | 'end') {
+    props.onValueChange({ key: propName, value });
   }
 
   function renderForm() {
-    const end = props.end === undefined ? now : props.end;
-
     return (
       <div>
         <TimeEntryPicker
@@ -47,18 +36,10 @@ export function TimeEntryTimeDisplayComponent(
           date={end}
           onStopEdit={(newEnd) => handleStopEdit(newEnd, 'end')}
         />
-        <p>{DateHelper.toDurationAsClock(props.start, end)}</p>
+        {DurationComponent}
       </div>
     );
   }
 
-  function renderTimeDisplay() {
-    return props.end === undefined ? renderHoursAndMinutes() : renderForm();
-  }
-
-  return (
-    <div className="time-entry-display">
-      <div>{renderTimeDisplay()}</div>
-    </div>
-  );
+  return <div className="time-entry-display">{TimeDisplay}</div>;
 }

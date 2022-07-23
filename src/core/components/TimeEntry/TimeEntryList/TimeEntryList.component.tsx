@@ -15,18 +15,23 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
         {noEntriesTplFallback}
         {timeEntryLists.map((timeEntryList) => (
           <>
-            <TimeEntryListHeaderComponent date={timeEntryList.date}></TimeEntryListHeaderComponent>
+            <TimeEntryListHeaderComponent
+              date={timeEntryList.date}
+            ></TimeEntryListHeaderComponent>
             {timeEntryList.entries.map((entry) => (
               <div>
                 <TimeEntryComponent
                   key={entry.id}
-                  isActive={props.forcedActiveTimeEntryId === undefined && entry.end === undefined}
+                  isActive={
+                    props.forcedActiveTimeEntryId === undefined &&
+                    entry.end === undefined
+                  }
                   enableSelection={bulkEdit}
                   timeEntry={entry}
                   onTimeEntryRemove={props.onRemove}
                   onTimeEntryContinue={props.onContinue}
                   onTimeEntryStop={props.onStop}
-                  onTimeEntryChange={props.onChange}
+                  onTimeEntryChange={props.onValueChange}
                 />
               </div>
             ))}
