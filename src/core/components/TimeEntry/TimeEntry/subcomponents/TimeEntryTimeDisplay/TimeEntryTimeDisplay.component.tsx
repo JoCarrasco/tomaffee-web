@@ -22,7 +22,7 @@ export function TimeEntryTimeDisplayComponent(
   ) {
     if (props.end !== undefined) {
       const updatedDate = DateHelper.toDateFromHourMinute12HourClock(
-        props[propName] as Date,
+        new Date((props[propName] as Date).getTime()),
         val,
       );
       props.onValueChange({
