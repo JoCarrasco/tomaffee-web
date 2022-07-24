@@ -26,9 +26,9 @@ export class DateHelper extends DateHelperCore {
     return this.getDateObject(date).format(DateHelperFormat.TwelveHourClockHourMinute);
   }
 
-  static toDateFromHourMinute12HourClock(date: Date, timeStr: string): Date {
+  static assignTimeToDate(date: Date, timeStr: string): Date {
     const timeAsArr = this.convert12HourTo24Hour(timeStr).split(':');
-    const cloneDate = date;
+    const cloneDate = new Date(date.getTime());
     cloneDate.setHours(parseInt(timeAsArr[0]));
     cloneDate.setMinutes(parseInt(timeAsArr[1]));
     return date;

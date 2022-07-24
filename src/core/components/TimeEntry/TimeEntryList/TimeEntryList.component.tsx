@@ -14,12 +14,12 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
       <>
         {noEntriesTplFallback}
         {timeEntryLists.map((timeEntryList) => (
-          <>
+          <div key={timeEntryList.date.getTime().toString()}>
             <TimeEntryListHeaderComponent
               date={timeEntryList.date}
             ></TimeEntryListHeaderComponent>
-            {timeEntryList.entries.map((entry) => (
-              <div>
+            <div>
+              {timeEntryList.entries.map((entry) => (
                 <TimeEntryComponent
                   key={entry.id}
                   isActive={
@@ -33,9 +33,9 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
                   onTimeEntryStop={props.onStop}
                   onTimeEntryChange={props.onValueChange}
                 />
-              </div>
-            ))}
-          </>
+              ))}
+            </div>
+          </div>
         ))}
       </>
     );

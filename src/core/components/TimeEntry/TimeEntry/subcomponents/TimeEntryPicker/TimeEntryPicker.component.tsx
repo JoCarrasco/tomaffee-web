@@ -19,22 +19,16 @@ export function TimeEntryPicker(props: ITimeEntryPickerProps) {
 
   function handleStopEdit(changedDateTimeValue: string | Date) {
     if (props.onStopEdit) {
-      let change = undefined;
-      if (typeof changedDateTimeValue === 'string') {
-        change = DateHelper.toDateFromHourMinute12HourClock(
-          new Date(value.getTime()),
-          changedDateTimeValue,
-        );
-      } else {
-        change = changedDateTimeValue;
-      }
-      setValue(change);
-      props.onStopEdit(change);
+      props.onStopEdit(
+        typeof changedDateTimeValue === 'string'
+          ? DateHelper.assignTimeToDate(value, changedDateTimeValue)
+          : changedDateTimeValue,
+      );
     }
   }
 
   return (
-    <>
+    <div>
       <BasicFormComponent
         onFocus={() => showCalendar()}
         initialValue={DateHelper.toHourMinute12HourClock(value)}
@@ -45,6 +39,6 @@ export function TimeEntryPicker(props: ITimeEntryPickerProps) {
         date={value}
         onStopEdit={handleStopEdit}
       />
-    </>
+    </div>
   );
 }
