@@ -1,4 +1,4 @@
-import { IUser, IProject } from "../../models/api";
+import { IUser, IProject } from "../../models";
 import { UserRole } from "../../static/core-enums";
 
 // Mock users coming from API

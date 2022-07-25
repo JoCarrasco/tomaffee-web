@@ -10,28 +10,30 @@ import './TimeEntryControls.styles.scss';
 
 interface ITimeEntryControlsProps {
   isActive: boolean;
-  onClickRemove?: () => any;
-  onClickStop?: () => any;
-  onClickContinue?: () => any;
+  onRemove?: () => any;
+  onStop?: () => any;
+  onContinue?: () => any;
 }
 
 export function TimeEntryControlsComponent(props: ITimeEntryControlsProps) {
+  const StopButton = (
+    <TimeEntryButtonComponent icon={faStopCircle} onClick={props.onStop} />
+  );
+
+  const PlayButton = (
+    <TimeEntryButtonComponent icon={faPlayCircle} onClick={props.onContinue} />
+  );
+
+  const RemoveButton = (
+    <i className="time-entry-remove-icon">
+      <FontAwesomeIcon icon={faTrashAlt} onClick={props.onRemove} />
+    </i>
+  );
+
   return (
     <div className="time-entry-icon-wrapper">
-      {props.isActive ? (
-        <TimeEntryButtonComponent
-          icon={faStopCircle}
-          onClick={props.onClickStop}
-        />
-      ) : (
-        <TimeEntryButtonComponent
-          icon={faPlayCircle}
-          onClick={props.onClickContinue}
-        />
-      )}
-      <i className="time-entry-remove-icon">
-        <FontAwesomeIcon icon={faTrashAlt} onClick={props.onClickRemove} />
-      </i>
+      {props.isActive ? StopButton : PlayButton}
+      {RemoveButton}
     </div>
   );
 }

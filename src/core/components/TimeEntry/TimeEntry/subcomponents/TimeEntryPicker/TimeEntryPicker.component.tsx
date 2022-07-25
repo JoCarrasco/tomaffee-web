@@ -19,11 +19,13 @@ export function TimeEntryPicker(props: ITimeEntryPickerProps) {
 
   function handleStopEdit(changedDateTimeValue: string | Date) {
     if (props.onStopEdit) {
-      props.onStopEdit(
+      const change =
         typeof changedDateTimeValue === 'string'
           ? DateHelper.assignTimeToDate(value, changedDateTimeValue)
-          : changedDateTimeValue,
-      );
+          : changedDateTimeValue;
+
+      props.onStopEdit(change);
+      setValue(change);
     }
   }
 

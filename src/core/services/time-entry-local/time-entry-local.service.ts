@@ -1,5 +1,5 @@
 import { StorageHelper } from "../../classes/storage/storage.helper.class";
-import { ITimeEntry } from "../../models/api";
+import { ITimeEntry } from "../../models";
 import { StorageKey } from "../../static/storage-key.enums";
 
 export class TimeEntryLocalService {

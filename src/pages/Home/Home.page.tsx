@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { TimeEntryService, TimeEntryListComponent } from "../../core";
 import { useTimeEntries } from '../../core/hooks';
-import { ITimeEntry } from '../../core/models/api';
+import { ITimeEntry } from '../../core/models';
 
 function HomePage() {
   const entries = useTimeEntries();

@@ -1,6 +1,6 @@
 import { DateHelper } from "..";
 import { StorageKey } from "../..";
-import { ITimeEntry } from "../../models/api";
+import { ITimeEntry } from "../../models";
 import { StorageHelper } from "../storage/storage.helper.class";
 import { v4 as uuidv4 } from 'uuid';
 

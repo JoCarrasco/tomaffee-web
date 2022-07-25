@@ -22,16 +22,16 @@ export const TimeEntryCalendar = forwardRef(
     }));
 
     function parseDateStrToDate(dateStr: string): Date {
-      const cloneDate = new Date(
+      const dateClone = new Date(
         props.date ? props.date.getTime() : new Date(),
       );
       if (props.date) {
         const year = parseInt(dateStr.slice(0, 4), 10);
         const month = parseInt(dateStr.slice(5, 7), 10);
         const day = parseInt(dateStr.slice(8, 10), 10);
-        cloneDate.setFullYear(year, month, day);
+        dateClone.setFullYear(year, month, day);
       }
-      return cloneDate;
+      return dateClone;
     }
 
     function handleStopEdit() {

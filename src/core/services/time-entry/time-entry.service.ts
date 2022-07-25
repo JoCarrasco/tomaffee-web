@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { TimeEntryHelper } from '../../classes/time-entry/time-entry-helper.class';
-import { ITimeEntry } from '../../models/api';
+import { ITimeEntry } from '../../models';
 export class TimeEntryService {
   private static timeEntries$ = new BehaviorSubject<ITimeEntry[]>([]);
   public static timeEntries: Observable<ITimeEntry[]> = this.timeEntries$.asObservable();

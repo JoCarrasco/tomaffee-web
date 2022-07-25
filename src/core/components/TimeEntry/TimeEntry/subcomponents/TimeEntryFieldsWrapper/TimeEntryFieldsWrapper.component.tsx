@@ -1,58 +1,37 @@
-import { useState } from "react";
-import { ITimeEntryPropChange } from "../..";
+import { ITimeEntry } from '../../../../../models';
+import { IBasicDataHandler } from '../../../../../models/interfaces/time-entry';
 import { BasicFormComponent } from '../../../../Forms/BasicForm/BasicForm.component';
 
-interface ITimeEntryFieldsWrapperComponent {
+interface ITimeEntryFieldsWrapperComponentProps extends IBasicDataHandler {
   title: string;
   description?: string;
-  allowEdit: boolean;
-  onValueChange: (obj: ITimeEntryPropChange) => any;
+  isEditable: boolean;
 }
 
 export const TimeEntryFieldsWrapperComponent = (
-  props: ITimeEntryFieldsWrapperComponent,
+  props: ITimeEntryFieldsWrapperComponentProps,
 ) => {
-  return (
-    <div className="time-entry-text-info-wrapper">
-      <TimeEntryFieldTitle
-        title={props.title}
-        onValueChange={(val) =>
-          props.onValueChange({ key: 'title', value: val })
-        }
-        allowEdit={props.allowEdit}
-      />
-      <TimeEntryFieldDescription description={props.description} />
-    </div>
-  );
-};
+  const defaultValue = 'Add a description';
+  const canEdit = props.isEditable;
+  const title = props.title ? props.title : defaultValue;
+  const description = props.description ? props.description : defaultValue;
 
-const TimeEntryFieldDescription = (props: { description?: string }) => {
-  return props.description !== undefined ? (
-    <p className="time-entry-text-description">{props.description}</p>
-  ) : null;
-};
-
-interface ITimeEntryFieldTitleProps {
-  title?: string;
-  allowEdit: boolean;
-  onValueChange: (val: string) => any;
-}
-
-const TimeEntryFieldTitle = (props: ITimeEntryFieldTitleProps) => {
-  const title =
-    props.title === '' || props.title === undefined
-      ? 'Add a title'
-      : props.title;
-  const [isEditing, setIsEditing] = useState(false);
-
-  function handleStopEdit(val: string) {
-    setIsEditing(false);
-    props.onValueChange(val);
+  function handleChange(propName: string, value: string) {
+    return props.onValueChange({ key: propName as keyof ITimeEntry, value });
   }
 
-  return isEditing && props.allowEdit ? (
-    <BasicFormComponent initialValue={title} onStopEdit={handleStopEdit} />
-  ) : (
-    <p onClick={() => setIsEditing(true)}>{title}</p>
+  return (
+    <div className="time-entry-text-info-wrapper">
+      <BasicFormComponent
+        allowEditOnClick={canEdit}
+        initialValue={title}
+        onStopEdit={(val) => handleChange('title', val)}
+      />
+      <BasicFormComponent
+        allowEditOnClick={canEdit}
+        initialValue={description}
+        onStopEdit={(val) => handleChange('description', val)}
+      />
+    </div>
   );
 };

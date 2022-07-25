@@ -1,4 +1,4 @@
-import { ITimeEntry } from "../../../models/api";
+import { ITimeEntry } from "../../../models";
 
 export interface ITimeEntryListComponentProps {
   forcedActiveTimeEntryId?: string;

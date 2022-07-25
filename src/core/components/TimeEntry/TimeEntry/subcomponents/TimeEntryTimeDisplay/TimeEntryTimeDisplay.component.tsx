@@ -1,13 +1,12 @@
 import React from 'react';
 import { useNow } from '../../../../../hooks';
-import { ITimeEntryPropChange } from '../../TimeEntry.models';
+import { IBasicDataHandler } from '../../../../../models/interfaces/time-entry';
 import { TimeEntryDurationComponent } from '../TimeEntryDuration';
 import { TimeEntryPicker } from '../TimeEntryPicker';
 
-interface ITimeEntryTimeDisplayComponentProps {
+interface ITimeEntryTimeDisplayComponentProps extends IBasicDataHandler {
   start: Date;
   end: Date | undefined;
-  onValueChange: (change: ITimeEntryPropChange) => any;
 }
 
 export function TimeEntryTimeDisplayComponent(

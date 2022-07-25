@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ITimeEntryComponentProps, ITimeEntryPropChange } from './TimeEntry.models';
+import { ITimeEntryComponentProps } from './TimeEntry.models';
 import {
   TimeEntryTimeDisplayComponent,
   TimeEntryControlsComponent,
@@ -7,6 +7,7 @@ import {
   TimeEntryFieldsWrapperComponent,
 } from './subcomponents';
 import './TimeEntry.style.scss';
+import { IDataObj } from '../../../models';
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [checked, setChecked] = useState<boolean>(false);
@@ -23,7 +24,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   };
 
-  function handleTimeEntryChanges(change: ITimeEntryPropChange) {
+  function handleTimeEntryChanges(change: IDataObj) {
     if (props.timeEntry[change.key] !== change.value) {
       props.onTimeEntryChange(props.timeEntry.id, {
         [change.key]: change.value,
@@ -31,17 +32,12 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   }
 
-  const CheckBox = () => {
-    if (!props.enableSelection) {
-      return null;
-    }
-    return (
-      <TimeEntryCheckboxComponent
-        value={checked}
-        onValueChange={handleSelectionValueChange}
-      />
-    );
-  };
+  const CheckBox = !props.enableSelection ? null : (
+    <TimeEntryCheckboxComponent
+      value={checked}
+      onValueChange={handleSelectionValueChange}
+    />
+  );
 
   return (
     <div className="time-entry-component-wrapper">
@@ -50,18 +46,16 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
           props.isActive ? 'time-entry-active' : ''
         }`}
       >
-        <CheckBox />
+        {CheckBox}
         <TimeEntryFieldsWrapperComponent
-          description={props.timeEntry.description}
-          title={props.timeEntry.title}
-          allowEdit={props.timeEntry.isEditable}
+          {...props?.timeEntry}
           onValueChange={(change) => handleTimeEntryChanges(change)}
         />
         <TimeEntryControlsComponent
           isActive={props.timeEntry.end === undefined}
-          onClickContinue={() => props.onTimeEntryContinue(props.timeEntry.id)}
-          onClickStop={() => props.onTimeEntryStop(props.timeEntry.id)}
-          onClickRemove={() => props.onTimeEntryRemove(props.timeEntry.id)}
+          onContinue={() => props.onContinue(props.timeEntry.id)}
+          onStop={() => props.onStop(props.timeEntry.id)}
+          onRemove={() => props.onRemove(props.timeEntry.id)}
         />
         <TimeEntryTimeDisplayComponent
           start={props.timeEntry.start}

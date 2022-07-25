@@ -5,9 +5,11 @@ import { TimeEntryListHeaderComponent } from './subcomponents/TimeEntryListHeade
 import { ITimeEntryListComponentProps } from './TimeEntryList.models';
 
 export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
-  const [bulkEdit, setBulkEdit] = React.useState<boolean>(false);
-  const timeEntryLists = TimeEntryHelper.parseEntriesToEntriesWithDate(props.entries);
-  const noEntriesTplFallback = props.entries.length === 0 ? (<p>No Time Entries</p>) : null;
+  const timeEntryLists = TimeEntryHelper.parseEntriesToEntriesWithDate(
+    props.entries,
+  );
+  const noEntriesTplFallback =
+    props.entries.length === 0 ? <p>No Time Entries</p> : null;
 
   function renderList() {
     return (
@@ -26,11 +28,9 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
                     props.forcedActiveTimeEntryId === undefined &&
                     entry.end === undefined
                   }
-                  enableSelection={bulkEdit}
+                  enableSelection={false}
                   timeEntry={entry}
-                  onTimeEntryRemove={props.onRemove}
-                  onTimeEntryContinue={props.onContinue}
-                  onTimeEntryStop={props.onStop}
+                  {...props}
                   onTimeEntryChange={props.onValueChange}
                 />
               ))}
@@ -41,9 +41,5 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
     );
   }
 
-  return (
-    <div>
-      {renderList()}
-    </div>
-  );
+  return <div>{renderList()}</div>;
 }
