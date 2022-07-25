@@ -31,7 +31,7 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
                   enableSelection={false}
                   timeEntry={entry}
                   {...props}
-                  onTimeEntryChange={props.onValueChange}
+                  onChange={props.onValueChange}
                 />
               ))}
             </div>

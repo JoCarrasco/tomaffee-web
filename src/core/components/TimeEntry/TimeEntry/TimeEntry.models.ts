@@ -7,7 +7,7 @@ export interface ITimeEntryComponentProps {
   onStop: (id: string) => any;
   onRemove: (id: string) => any;
   onContinue: (id: string) => any;
-  onTimeEntryChange: (id: string, changes: Partial<ITimeEntry>) => any;
-  onUnselectEntry?: (id: string) => void;
-  onSelectEntry?: (id: string) => void;
+  onChange: (id: string, changes: Partial<ITimeEntry>) => any;
+  onUnselect?: (id: string) => void;
+  onSelect?: (id: string) => void;
 }

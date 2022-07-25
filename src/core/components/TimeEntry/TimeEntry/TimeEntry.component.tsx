@@ -13,20 +13,17 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [checked, setChecked] = useState<boolean>(false);
 
   const handleSelectionValueChange = () => {
-    if (
-      props.onSelectEntry !== undefined &&
-      props.onUnselectEntry !== undefined
-    ) {
+    if (props.onSelect !== undefined && props.onUnselect !== undefined) {
       const id = props.timeEntry.id;
       const newValue = !checked;
-      newValue ? props.onSelectEntry(id) : props.onUnselectEntry(id);
+      newValue ? props.onSelect(id) : props.onUnselect(id);
       setChecked(!checked);
     }
   };
 
   function handleTimeEntryChanges(change: IDataObj) {
     if (props.timeEntry[change.key] !== change.value) {
-      props.onTimeEntryChange(props.timeEntry.id, {
+      props.onChange(props.timeEntry.id, {
         [change.key]: change.value,
       });
     }
