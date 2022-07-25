@@ -19,13 +19,13 @@ export function TimeEntryTimeDisplayComponent(
     <TimeEntryDurationComponent start={props.start} end={end} />
   );
 
-  const TimeDisplay = props.end ? renderForm() : DurationComponent;
+  const TimeDisplay = props.end ? DateTimePickerComponent() : DurationComponent;
 
   function handleStopEdit(value: Date, propName: 'start' | 'end') {
     props.onValueChange({ key: propName, value });
   }
 
-  function renderForm() {
+  function DateTimePickerComponent() {
     return (
       <div>
         <TimeEntryPicker
