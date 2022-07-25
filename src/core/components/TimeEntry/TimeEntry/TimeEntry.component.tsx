@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IDataObj } from '../../../models';
 import { ITimeEntryComponentProps } from './TimeEntry.models';
 import {
   TimeEntryTimeDisplayComponent,
@@ -7,12 +8,11 @@ import {
   TimeEntryFieldsWrapperComponent,
 } from './subcomponents';
 import './TimeEntry.style.scss';
-import { IDataObj } from '../../../models';
 
 export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const [checked, setChecked] = useState<boolean>(false);
 
-  const handleSelectionValueChange = () => {
+  const handleSelectionChange = () => {
     if (props.onSelect !== undefined && props.onUnselect !== undefined) {
       const id = props.timeEntry.id;
       const newValue = !checked;
@@ -21,7 +21,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   };
 
-  function handleTimeEntryChanges(change: IDataObj) {
+  function handleChange(change: IDataObj) {
     if (props.timeEntry[change.key] !== change.value) {
       props.onChange(props.timeEntry.id, {
         [change.key]: change.value,
@@ -32,7 +32,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
   const CheckBox = !props.enableSelection ? null : (
     <TimeEntryCheckboxComponent
       value={checked}
-      onValueChange={handleSelectionValueChange}
+      onValueChange={handleSelectionChange}
     />
   );
 
@@ -46,7 +46,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         {CheckBox}
         <TimeEntryFieldsWrapperComponent
           {...props?.timeEntry}
-          onValueChange={(change) => handleTimeEntryChanges(change)}
+          onValueChange={(change) => handleChange(change)}
         />
         <TimeEntryControlsComponent
           isActive={props.timeEntry.end === undefined}
@@ -57,7 +57,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         <TimeEntryTimeDisplayComponent
           start={props.timeEntry.start}
           end={props.timeEntry.end}
-          onValueChange={(change) => handleTimeEntryChanges(change)}
+          onValueChange={(change) => handleChange(change)}
         />
       </div>
     </div>
