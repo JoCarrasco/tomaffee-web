@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { DateHelper, TimeCounter } from "../..";
 
-export function useNow() {
+export function useNow(defaultDate?: Date) {
   const counter = new TimeCounter(onRepeatCounter, () => null);
   const [now, setNow] = useState(DateHelper.getNow().asDate);
 
   useEffect(() => {
-    if (!counter.isActive()) {
+    if (!counter.isActive() && defaultDate === undefined) {
       counter.startCounter(1000);
     }
-    return (() => counter.stopCounter());
+    return () => counter.stopCounter();
   });
 
   function onRepeatCounter() {

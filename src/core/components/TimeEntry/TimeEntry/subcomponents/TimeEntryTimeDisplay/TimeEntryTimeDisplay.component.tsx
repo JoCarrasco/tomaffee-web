@@ -12,8 +12,7 @@ interface ITimeEntryTimeDisplayComponentProps extends IBasicDataHandler {
 export function TimeEntryTimeDisplayComponent(
   props: ITimeEntryTimeDisplayComponentProps,
 ) {
-  const now = useNow();
-  const end = props.end ? props.end : now;
+  const end = useNow(props.end);
   const DurationComponent = (
     <TimeEntryDurationComponent start={props.start} end={end} />
   );
