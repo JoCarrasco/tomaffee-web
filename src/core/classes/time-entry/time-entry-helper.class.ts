@@ -61,9 +61,14 @@ export class TimeEntryHelper {
       const targetDates = DateHelper.getLastDaysDates(numberOfDatesFromNow);
       const firstDay = targetDates[0];
       const lastDay = targetDates[targetDates.length - 1];
-      formattedEntries = entries.filter((x) => DateHelper.isBetween(x.start, firstDay, lastDay));
-      formattedEntries.sort((a, b) => b.start.getTime() - a.start.getTime());
+      let entriesInRange = entries.filter((x) => DateHelper.isBetween(x.start, firstDay, lastDay));
+      if (entriesInRange.length < 30) {
+         entriesInRange = entries
+      }
+
+      formattedEntries =  entriesInRange.sort((a, b) => b.start.getTime() - a.start.getTime());
     }
+
     return formattedEntries;
   }
 
