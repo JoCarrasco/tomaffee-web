@@ -27,11 +27,6 @@ export const TimeEntryFieldsWrapperComponent = (
         initialValue={title}
         onStopEdit={(val) => handleChange('title', val)}
       />
-      <BasicFormComponent
-        allowEditOnClick={canEdit}
-        initialValue={description}
-        onStopEdit={(val) => handleChange('description', val)}
-      />
     </div>
   );
 };

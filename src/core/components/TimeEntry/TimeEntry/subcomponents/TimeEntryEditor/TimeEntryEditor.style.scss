@@ -1,0 +1,28 @@
+.time-entry-editor-outer-wrapper {
+  position: absolute;
+  padding: 8px;
+  background: #fff;
+  border-radius: 5px;
+  border: 1px solid aqua;
+  .time-entry-editor-inner-wrapper {
+    display: flex;
+    .time-entry-picker-wrapper {
+      margin: 6px;
+      padding: 5px 8px;
+      border-radius: 2px;
+      background: #ecdaea;
+    }
+  }
+}
+
+// Calendar Styles
+.time-entry-editor-calendar-wrapper {
+  .react-calendar__tile--active {
+    background-color: blue;
+    color: #fff;
+  }
+  .react-calendar__tile--now {
+    border: 2px solid blue;
+    // color: #fff;
+  }
+}

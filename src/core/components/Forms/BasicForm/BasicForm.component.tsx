@@ -1,26 +1,26 @@
 import { useState } from 'react';
 
 interface IBasicFormComponentProps {
-  initialValue?: string;
+  initialValue: string;
   allowEditOnClick?: boolean;
+  onFormat?: (val: string) => string;
+  onValidation?: (val: string) => boolean;
   onStopEdit: (val: string) => any;
   onFocus?: () => any;
 }
 
 export const BasicFormComponent = (props: IBasicFormComponentProps) => {
-  const defaultValue = '';
   const allowEditOnClick = props.allowEditOnClick
     ? props.allowEditOnClick
     : true;
   const [isEditing, setIsEditing] = useState(false);
-  const [val, setVal] = useState(
-    props.initialValue ? props.initialValue : defaultValue,
-  );
+  const [val, setVal] = useState(props.initialValue);
+  const [lastVal, setLastVal] = useState(val);
 
   function renderFlatStr() {
     return (
       <p onClick={() => (allowEditOnClick ? setIsEditing(true) : null)}>
-        {props.initialValue}
+        {val === props.initialValue ? props.initialValue : lastVal}
       </p>
     );
   }
@@ -32,8 +32,23 @@ export const BasicFormComponent = (props: IBasicFormComponentProps) => {
   }
 
   function handleStopEdit() {
-    props.onStopEdit(val);
+    let isValid = true;
+    if (props.onValidation) {
+      isValid = props.onValidation(val);
+    }
+
+    if (isValid) {
+      props.onStopEdit(val);
+      setLastVal(() => val);
+    } else {
+      setVal(() => lastVal);
+    }
+
     setIsEditing(false);
+  }
+
+  function onInputChange(val: string) {
+    setVal(props.onFormat ? props.onFormat(val) : val);
   }
 
   function renderInteractiveInput() {
@@ -43,7 +58,7 @@ export const BasicFormComponent = (props: IBasicFormComponentProps) => {
         value={val}
         onBlur={handleStopEdit}
         onFocus={handleFocus}
-        onChange={(e) => setVal(e.target.value)}
+        onChange={(e) => onInputChange(e.target.value)}
         autoFocus
       />
     );

@@ -4,8 +4,4 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  &.time-entry-active {
-    background-color: red;
-    transition: all 0.4s;
-  }
 }

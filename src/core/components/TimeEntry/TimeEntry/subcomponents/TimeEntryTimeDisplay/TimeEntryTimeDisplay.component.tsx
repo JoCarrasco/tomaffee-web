@@ -1,43 +1,45 @@
-import React from 'react';
-import { useNow } from '../../../../../hooks';
-import { IBasicDataHandler } from '../../../../../models/interfaces/time-entry';
+import React, { useState } from 'react';
+import { ITimeEntryNotNull } from '../../../../../models';
+import { IDataHandler } from '../../../../../models/interfaces/time-entry';
 import { TimeEntryDurationComponent } from '../TimeEntryDuration';
-import { TimeEntryPicker } from '../TimeEntryPicker';
+import { TimeEntryEditorComponent } from '../TimeEntryEditor';
+import './TimeEntryTimeDisplay.style.scss';
 
-interface ITimeEntryTimeDisplayComponentProps extends IBasicDataHandler {
+interface ITimeEntryTimeDisplayComponentProps extends IDataHandler {
   start: Date;
-  end: Date | undefined;
+  end: Date;
 }
 
 export function TimeEntryTimeDisplayComponent(
   props: ITimeEntryTimeDisplayComponentProps,
 ) {
-  const end = useNow(props.end);
+  console.log(props.start, props.end);
+  const [showEditor, setShowEditor] = useState<boolean>(false);
+
   const DurationComponent = (
-    <TimeEntryDurationComponent start={props.start} end={end} />
+    <button onClick={() => setShowEditor((val) => !val)}>
+      <TimeEntryDurationComponent start={props.start} end={props.end} />
+    </button>
   );
 
-  const TimeDisplay = props.end ? DateTimePickerComponent() : DurationComponent;
-
-  function handleStopEdit(value: Date, propName: 'start' | 'end') {
-    props.onValueChange({ key: propName, value });
+  function handleChange(value: Partial<ITimeEntryNotNull>) {
+    props.onValueChange(value);
+    setShowEditor(false);
   }
 
-  function DateTimePickerComponent() {
+  const DateTimePickerComponent = () => {
     return (
-      <div>
-        <TimeEntryPicker
-          date={props.start}
-          onStopEdit={(newStart) => handleStopEdit(newStart, 'start')}
-        />
-        <TimeEntryPicker
-          date={end}
-          onStopEdit={(newEnd) => handleStopEdit(newEnd, 'end')}
-        />
+      <div className="time-entry-display-picker-wrapper">
         {DurationComponent}
+        <TimeEntryEditorComponent
+          start={props.start}
+          end={props.end}
+          showComponent={showEditor}
+          onChange={handleChange}
+        />
       </div>
     );
-  }
+  };
 
-  return <div className="time-entry-display">{TimeDisplay}</div>;
+  return <div className="time-entry-display">{DateTimePickerComponent()}</div>;
 }

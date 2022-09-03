@@ -1,6 +1,6 @@
 import { DateHelper } from "..";
 import { StorageKey } from "../..";
-import { ITimeEntry } from "../../models";
+import { ITimeEntry, ITimeEntryNotNull } from "../../models";
 import { StorageHelper } from "../storage/storage.helper.class";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -35,9 +35,11 @@ export class TimeEntryHelper {
 
   static async isTimeEntryOnGoing(): Promise<boolean> {
     const storedEntries = await this.getStoredEntries();
+    
     if (storedEntries.length > 0) {
       return storedEntries.find(e => e.end === undefined) !== undefined;
     }
+
     return false;
   }
 
@@ -63,7 +65,7 @@ export class TimeEntryHelper {
       const lastDay = targetDates[targetDates.length - 1];
       let entriesInRange = entries.filter((x) => DateHelper.isBetween(x.start, firstDay, lastDay));
       if (entriesInRange.length < 30) {
-         entriesInRange = entries
+         entriesInRange = entries.slice(0, 30)
       }
 
       formattedEntries =  entriesInRange.sort((a, b) => b.start.getTime() - a.start.getTime());
@@ -97,9 +99,10 @@ export class TimeEntryHelper {
     });
   }
 
-  static parseEntriesToEntriesWithDate(entries: ITimeEntry[]): { date: Date; entries: ITimeEntry[]}[] {
-    const formattedEntries: { date: Date; entries: ITimeEntry[] }[] = [];
-    for (const entry of entries) {
+  static parseEntriesToEntriesWithDate(entries: ITimeEntry[]): { date: Date; entries: ITimeEntryNotNull[]}[] {
+    const formattedEntries: { date: Date; entries: ITimeEntryNotNull[] }[] = [];
+    const filteredEntries = entries.filter((x) => x.end != undefined) as ITimeEntryNotNull[];
+    for (const entry of filteredEntries) {
       const targetFormattedIndex = formattedEntries.findIndex((x) => DateHelper.isSameDay(entry.start, x.date));
       if (targetFormattedIndex !== -1) {
         formattedEntries[targetFormattedIndex].entries.push(entry);
@@ -110,6 +113,8 @@ export class TimeEntryHelper {
     
     return formattedEntries;
   }
+
+
 
   static async continueTimeEntry(id: string): Promise<ITimeEntry | undefined> {
     try {

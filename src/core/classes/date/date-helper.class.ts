@@ -1,5 +1,5 @@
 import { DateHelperCore } from "./date-helper-core.class";
-import { DateHelperFormat } from "./date-helper.enums";
+import { DateHelperFormat, DateHelperFormatRegex } from "./date-helper.enums";
 import { IDateHelperDateOutput, TDateObject, IDateHelperSimpleTimeObj } from "./date-helper.models";
 
 export class DateHelper extends DateHelperCore {
@@ -7,9 +7,9 @@ export class DateHelper extends DateHelperCore {
     return this.getDateObject(date).format(this.formats.SimpleTime);
   }
 
-  static toDurationAsClock(a: Date, b?: Date): string {
+  static toDurationAsClock(a: Date, b: Date): string {
     const dateA = this.getDateObject(a);
-    const dateB = b !== undefined ? this.getDateObject(b) : this.getNow().asObject;
+    const dateB = this.getDateObject(b);
     const d = this.lib.duration(dateB.diff(dateA));
     return d.format(this.formats.SimpleTime);
   }
@@ -19,25 +19,27 @@ export class DateHelper extends DateHelperCore {
   }
 
   static toFriendlyDate(date: Date): string {
-    return this.getDateObject(date).toString();
+    const obj = this.getDateObject(date);
+    if (obj.isSame(this.getNow().asDate, 'day')) {
+      return 'Today';
+    } else {
+      const yesterday = this.getNow().asObject.subtract(1, 'day')
+      if (obj.isSame(yesterday, 'day')) {
+        return 'Yesterday';
+      }
+    }
+
+    const formated = obj.format("ddd, DD MMM");
+    return formated;
   }
 
-  static toHourMinute12HourClock(date: Date) {
-    return this.getDateObject(date).format(DateHelperFormat.TwelveHourClockHourMinute);
-  }
-
-  static assignTimeToDate(date: Date, timeStr: string): Date {
-    const timeAsArr = this.convert12HourTo24Hour(timeStr).split(':');
-    const cloneDate = new Date(date.getTime());
-    cloneDate.setHours(parseInt(timeAsArr[0]));
-    cloneDate.setMinutes(parseInt(timeAsArr[1]));
-    return date;
+  static toHourMinute12HourClock(date: Date): string {
+    return this.getDateObject(date).format(DateHelperFormat.TwelveHourClockHourMinute).toUpperCase();
   }
 
   static convert12HourTo24Hour(timeStr: string): string {
     const timeAsArr = timeStr.split(':');
     let hourAsString = timeAsArr[0];
-
     if (timeStr.includes('PM')) {
       let hour = parseInt(timeAsArr[0], 10);
       hour = hour !== 12 ? hour + 12 : 0;
@@ -69,9 +71,45 @@ export class DateHelper extends DateHelperCore {
   }
 
   static assignDate(timeObj: Partial<IDateHelperSimpleTimeObj>, date: Date): Date {
-    if (timeObj.hour !== undefined) {date.setHours(timeObj.hour)}
+    if (timeObj.hour !== undefined) { date.setHours(timeObj.hour)}
     if (timeObj.minute !== undefined) { date.setMinutes(timeObj.minute) }
-    if (timeObj.second !== undefined) {date.setSeconds(timeObj.second) }
+    if (timeObj.second !== undefined) { date.setSeconds(timeObj.second) }
     return date;
+  }
+
+  // Note: Create unit testing for new functionality
+  static assignDateTimeToDate(dateTime: Date, overrideDate: Date): Date {
+    overrideDate.setHours(dateTime.getHours())
+    overrideDate.setMinutes(dateTime.getMinutes())
+    return overrideDate;
+  }
+
+  // Note: Create unit testing for new functionality
+  static assignFullDateToDate(fullDate: Date, overrideDate: Date): Date {
+    const fullDateObj = this.toSimpleDateObject(fullDate);
+    overrideDate.setFullYear(fullDateObj.year, fullDateObj.month, fullDateObj.date);
+    return overrideDate;
+  }
+  
+  // Note: Create unit testing for new functionality
+  static timeStrToDate(timeStr: string, overrideDate?: Date): Date {
+    const isPM = timeStr.includes('PM');
+    const tempTimeArr = timeStr.split(":");
+
+    let hours = parseInt(tempTimeArr[0], 10);
+    if (isPM) {
+      hours += 12;
+    }
+    const minutes = parseInt(tempTimeArr[1].slice(0, 2), 10);
+    const date = overrideDate ? overrideDate : this.getNow().asDate;
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    return date;
+  }
+
+  // Note: Create unit testing for new functionality
+  static isValidClockStr(str: string): boolean {
+    const regExp = new RegExp(DateHelperFormatRegex.TwelveHourClockHourMinute);
+    return regExp.test(str);
   }
 }

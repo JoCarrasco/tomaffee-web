@@ -48,7 +48,6 @@ describe('DateHelper Core Class Test', () => {
     expect(objDate).toHaveProperty('date');
     expect(objDate).toHaveProperty('month');
     expect(objDate).toHaveProperty('year');
-
     expect(objDate.date).toEqual(newDate.getDate());
     expect(objDate.month).toEqual(newDate.getMonth());
     expect(objDate.year).toEqual(newDate.getFullYear());

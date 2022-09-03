@@ -1,44 +1,58 @@
-import React, { useRef, useState } from 'react';
-import { DateHelper } from '../../../../../classes';
+import React, { useState } from 'react';
+import { DateHelper, DateHelperFormatRegex } from '../../../../../classes';
 import { BasicFormComponent } from '../../../../Forms';
-import { TimeEntryCalendar } from './subcomponents/TimeEntryCalendar';
-import { ITimeEntryCalendarHandle } from './subcomponents/TimeEntryCalendar/TimeEntryCalendar.models';
+import './TimeEntryPicker.style.scss';
 
 interface ITimeEntryPickerProps {
   date: Date;
   onStopEdit?: (date: Date) => any;
+  onValidation?: (dateTime: Date) => boolean;
 }
 
 export function TimeEntryPicker(props: ITimeEntryPickerProps) {
   const [value, setValue] = useState<Date>(props.date);
-  const calendarComponent = useRef<ITimeEntryCalendarHandle>(null);
 
-  function showCalendar() {
-    calendarComponent?.current?.show();
-  }
-
-  function handleStopEdit(changedDateTimeValue: string | Date) {
+  function handleStopEdit(timeStr: string) {
     if (props.onStopEdit) {
-      const change =
-        typeof changedDateTimeValue === 'string'
-          ? DateHelper.assignTimeToDate(value, changedDateTimeValue)
-          : changedDateTimeValue;
-
+      const change = DateHelper.timeStrToDate(timeStr, props.date);
       props.onStopEdit(change);
       setValue(change);
     }
   }
 
+  function formatStrOnEveryChange(val: string): string {
+    let finalVal = val.toUpperCase();
+    return finalVal;
+  }
+
+  function parentValidation(val: string, isValid: boolean): boolean {
+    if (props.onValidation) {
+      isValid = props.onValidation(DateHelper.timeStrToDate(val, props.date));
+    }
+
+    return isValid;
+  }
+
+  function forceValidationOnEveryChange(val: string): boolean {
+    let isValid = true;
+
+    if (
+      !DateHelperFormatRegex.TwelveHourClockHourMinute.test(val) ||
+      val.length < 8 ||
+      !parentValidation(val, isValid)
+    ) {
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
   return (
-    <div>
+    <div className="time-entry-picker-wrapper">
       <BasicFormComponent
-        onFocus={() => showCalendar()}
         initialValue={DateHelper.toHourMinute12HourClock(value)}
-        onStopEdit={handleStopEdit}
-      />
-      <TimeEntryCalendar
-        ref={calendarComponent}
-        date={value}
+        onValidation={forceValidationOnEveryChange}
+        onFormat={formatStrOnEveryChange}
         onStopEdit={handleStopEdit}
       />
     </div>

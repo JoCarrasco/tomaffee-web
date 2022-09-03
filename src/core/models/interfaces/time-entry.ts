@@ -1,4 +1,4 @@
-import { ITimeEntry } from "../entities";
+import { ITimeEntry, ITimeEntryNotNull } from "../entities";
 
 export interface IDataObj {
   key: keyof ITimeEntry;
@@ -7,6 +7,10 @@ export interface IDataObj {
 
 export interface IBasicDataHandler {
   onValueChange: (obj: IDataObj) => any;
+}
+
+export interface IDataHandler {
+  onValueChange: (obj: Partial<ITimeEntryNotNull>) => any
 }
 
 export interface IIdDataHandler {

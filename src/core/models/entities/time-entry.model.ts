@@ -7,6 +7,10 @@ export interface ITimeEntryPrimitive {
   end?: Date;
 }
 
+export interface ITimeEntryNotNull extends ITimeEntry {
+  end: Date
+}
+
 export interface ITimeEntryConstrains {
   isEditable: boolean
 }

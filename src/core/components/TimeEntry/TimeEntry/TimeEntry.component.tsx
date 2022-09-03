@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IDataObj } from '../../../models';
+import { IDataObj, ITimeEntryNotNull } from '../../../models';
 import { ITimeEntryComponentProps } from './TimeEntry.models';
 import {
   TimeEntryTimeDisplayComponent,
@@ -29,6 +29,10 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   }
 
+  function handleEditorChange(change: Partial<ITimeEntryNotNull>) {
+    props.onChange(props.timeEntry.id, change);
+  }
+
   const CheckBox = !props.enableSelection ? null : (
     <TimeEntryCheckboxComponent
       value={checked}
@@ -38,11 +42,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
 
   return (
     <div className="time-entry-component-wrapper">
-      <div
-        className={`time-entry-default ${
-          props.isActive ? 'time-entry-active' : ''
-        }`}
-      >
+      <div className="time-entry-default">
         {CheckBox}
         <TimeEntryFieldsWrapperComponent
           {...props?.timeEntry}
@@ -57,7 +57,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         <TimeEntryTimeDisplayComponent
           start={props.timeEntry.start}
           end={props.timeEntry.end}
-          onValueChange={(change) => handleChange(change)}
+          onValueChange={(change) => handleEditorChange(change)}
         />
       </div>
     </div>

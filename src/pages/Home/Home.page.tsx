@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { TimeEntryService, TimeEntryListComponent } from "../../core";
+import { ControlTimerComponent } from '../../core/components/Controls/Timer/Timer.component';
 import { useTimeEntries } from '../../core/hooks';
 import { ITimeEntry } from '../../core/models';
 
@@ -32,6 +33,7 @@ function HomePage() {
       <p onClick={() => TimeEntryService.createNewEntry()}>
         Push button to create time entry
       </p>
+      <ControlTimerComponent />
       <TimeEntryListComponent
         entries={entries}
         onContinue={handleContinue}
