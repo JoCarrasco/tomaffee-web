@@ -11,6 +11,10 @@ function HomePage() {
  
   }, [entries]);
 
+  function getUnfinishedTimeEntry(): ITimeEntry | undefined {
+    return entries.find((x) => x.end === undefined);
+  }
+
   function handleStop(timeEntryId: string) {
     TimeEntryService.stopTimeEntry(timeEntryId);
   }
@@ -27,13 +31,21 @@ function HomePage() {
     TimeEntryService.updateTimeEntry(timeEntryId, change);
   }
 
+  function handleStart(title?: string) {
+    TimeEntryService.startNewEntry({ title });
+  }
+
+  const activeTimeEntry = getUnfinishedTimeEntry();
+
   return (
     <div className="App">
       <h6>Tomaffee</h6>
-      <p onClick={() => TimeEntryService.createNewEntry()}>
-        Push button to create time entry
-      </p>
-      <ControlTimerComponent />
+      <ControlTimerComponent
+        activeTimeEntry={activeTimeEntry}
+        onPause={handleStop}
+        onChange={handleChange}
+        onStart={handleStart}
+      />
       <TimeEntryListComponent
         entries={entries}
         onContinue={handleContinue}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TimeEntryHelper } from '../../../classes/time-entry/time-entry-helper.class';
 import { ITimeEntryNotNull } from '../../../models';
 import { TimeEntryComponent } from '../TimeEntry/TimeEntry.component';
@@ -6,6 +6,7 @@ import { TimeEntryListHeaderComponent } from './subcomponents/TimeEntryListHeade
 import { ITimeEntryListComponentProps } from './TimeEntryList.models';
 
 export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
+  useEffect(() => {}, [props.entries]);
   const timeEntryLists = TimeEntryHelper.parseEntriesToEntriesWithDate(
     props.entries,
   );

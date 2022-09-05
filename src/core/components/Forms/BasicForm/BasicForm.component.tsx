@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface IBasicFormComponentProps {
   initialValue: string;
@@ -10,6 +10,9 @@ interface IBasicFormComponentProps {
 }
 
 export const BasicFormComponent = (props: IBasicFormComponentProps) => {
+  useEffect(() => {
+    setLastVal(props.initialValue);
+  }, [props.initialValue]);
   const allowEditOnClick = props.allowEditOnClick
     ? props.allowEditOnClick
     : true;

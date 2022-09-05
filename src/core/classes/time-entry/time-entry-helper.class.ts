@@ -93,15 +93,21 @@ export class TimeEntryHelper {
   }
 
   private static saveTimeEntries(entries: ITimeEntry[]): Promise<void> {
-    return new Promise((res) => {
-      StorageHelper.set(StorageKey.TimeEntries, entries);
-      res();
-    });
+    return new Promise((res, rej) => {
+      try {
+        StorageHelper.set(StorageKey.TimeEntries, entries);
+        res();
+      } catch (e) {
+        const topic = "Saving the time entries";
+        console.error('TimeEntryHelper:', topic);
+        rej(e)
+      }
+    })
   }
 
   static parseEntriesToEntriesWithDate(entries: ITimeEntry[]): { date: Date; entries: ITimeEntryNotNull[]}[] {
     const formattedEntries: { date: Date; entries: ITimeEntryNotNull[] }[] = [];
-    const filteredEntries = entries.filter((x) => x.end != undefined) as ITimeEntryNotNull[];
+    const filteredEntries = entries.filter((x) => x.end !== undefined) as ITimeEntryNotNull[];
     for (const entry of filteredEntries) {
       const targetFormattedIndex = formattedEntries.findIndex((x) => DateHelper.isSameDay(entry.start, x.date));
       if (targetFormattedIndex !== -1) {
@@ -126,10 +132,10 @@ export class TimeEntryHelper {
   }
 
   static async removeEntry(id: string): Promise<void> {
-    const entries = await this.getStoredEntries();
+    let entries = await this.getStoredEntries();
     const targetIndex = entries.findIndex(e => e.id === id);
     entries.splice(targetIndex, 1);
-    this.saveTimeEntries(entries);
+    return this.saveTimeEntries(entries);
   }
 
   static async stopTimeEntry(id: string): Promise<void> {

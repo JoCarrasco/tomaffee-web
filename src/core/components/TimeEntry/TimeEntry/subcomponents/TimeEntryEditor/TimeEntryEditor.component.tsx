@@ -46,10 +46,6 @@ export const TimeEntryEditorComponent = (
   }
 
   function submitChanges() {
-    console.log({
-      start: value[0],
-      end: value[1],
-    });
     props.onChange({
       start: value[0],
       end: value[1],

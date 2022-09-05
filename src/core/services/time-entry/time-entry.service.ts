@@ -17,7 +17,7 @@ export class TimeEntryService {
     }
   }
 
-  private static async updateTimeEntries(): Promise<void> {
+  static async updateTimeEntries(): Promise<void> {
     try {
       this.timeEntries$.next(await TimeEntryHelper.getTimeEntriesByDays(this.numberOfDatesFromNow));
     } catch (err) {
@@ -25,8 +25,8 @@ export class TimeEntryService {
     }
   }
 
-  static async createNewEntry() {
-    await TimeEntryHelper.createNewEntry();
+  static async startNewEntry(data?: Partial<ITimeEntry>) {
+    await TimeEntryHelper.createNewEntry(data);
     return this.updateTimeEntries();
   }
 
@@ -36,8 +36,9 @@ export class TimeEntryService {
 
   static async removeTimeEntry(id: string): Promise<void> {
     try {
-      await TimeEntryHelper.removeEntry(id);
-      return this.updateTimeEntries();
+      TimeEntryHelper.removeEntry(id).then(() => {
+        this.updateTimeEntries();
+      });
     } catch (err) {
       console.error(err);
     }

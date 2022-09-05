@@ -13,9 +13,7 @@ interface ITimeEntryTimeDisplayComponentProps extends IDataHandler {
 export function TimeEntryTimeDisplayComponent(
   props: ITimeEntryTimeDisplayComponentProps,
 ) {
-  console.log(props.start, props.end);
   const [showEditor, setShowEditor] = useState<boolean>(false);
-
   const DurationComponent = (
     <button onClick={() => setShowEditor((val) => !val)}>
       <TimeEntryDurationComponent start={props.start} end={props.end} />

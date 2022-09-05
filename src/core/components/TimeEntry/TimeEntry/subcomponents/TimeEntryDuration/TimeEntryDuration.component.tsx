@@ -8,5 +8,9 @@ interface ITimeEntryDurationComponentProps {
 export function TimeEntryDurationComponent(
   props: ITimeEntryDurationComponentProps,
 ) {
-  return <p>{DateHelper.toDurationAsClock(props.start, props.end)}</p>;
+  return (
+    <p className="time-entry-duration">
+      {DateHelper.toDurationAsClock(props.start, props.end)}
+    </p>
+  );
 }
