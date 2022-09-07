@@ -1,0 +1,11 @@
+.time-entry-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 3rem;
+  span {
+    font-size: 1em;
+    padding: 1rem;
+    font-weight: bold;
+  }
+}
