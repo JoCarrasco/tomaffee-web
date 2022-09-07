@@ -12,6 +12,7 @@ class MockDateHelperCore extends DateHelperCore {
   public static getSimpleDateObj(date: Date): IDateHelperSimpleDateObj {
     return this.toSimpleDateObject(date);
   }
+  
   public static getTimeObj(date: Date): IDateHelperSimpleTimeObj {
     return this.toTimeObject(date);
   }

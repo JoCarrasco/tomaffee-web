@@ -1,4 +1,4 @@
-import { DateHelperCore, DateHelper, DEFAULT_TIME_REGEX } from '../../../../core';
+import { DateHelper, DEFAULT_TIME_REGEX } from '../../../../core';
 import { DEFAULT_MOCK_DATES as mock } from '../../../../mocks';
 
 describe('DateHelper Util Class Test', () => {
@@ -13,11 +13,8 @@ describe('DateHelper Util Class Test', () => {
     dateVariant.setHours(mock.hoursToBeDiff);
     const rangeDuration: string = DateHelper.toDurationAsClock(mock.dateA, dateVariant);
     const hoursDiff: string = rangeDuration.slice(0, 2);
-    const pastDuration: string = DateHelper.toDurationAsClock(new Date());
     const hoursDiffInNumber = parseInt(hoursDiff, 10);
-    expect(pastDuration).toMatch(DEFAULT_TIME_REGEX);
     expect(rangeDuration).toMatch(DEFAULT_TIME_REGEX);
-    expect(pastDuration).not.toBe('');
     expect(rangeDuration).not.toBe('');
     expect(hoursDiffInNumber).toEqual(mock.hoursToBeDiff);
   });
