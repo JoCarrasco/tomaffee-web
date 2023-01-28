@@ -8,7 +8,6 @@ TimeEntryService.init();
 function App() {
   return (
     <div className="App">
-      <h6>Tomaffee</h6>
       <HomePage></HomePage>
     </div>
   );
