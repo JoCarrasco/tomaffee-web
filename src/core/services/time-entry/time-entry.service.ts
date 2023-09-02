@@ -56,7 +56,7 @@ export class TimeEntryService {
   static async continueTimeEntry(id: string): Promise<void> {
     try {
       await TimeEntryHelper.continueTimeEntry(id);
-      return this.updateTimeEntries();
+      await this.updateTimeEntries();
     } catch (err) {
       console.error(err);
     }

@@ -51,7 +51,6 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
         <TimeEntryControlsComponent
           isActive={props.timeEntry.end === undefined}
           onContinue={() => props.onContinue(props.timeEntry.id)}
-          onStop={() => props.onStop(props.timeEntry.id)}
           onRemove={() => props.onRemove(props.timeEntry.id)}
         />
         <TimeEntryTimeDisplayComponent

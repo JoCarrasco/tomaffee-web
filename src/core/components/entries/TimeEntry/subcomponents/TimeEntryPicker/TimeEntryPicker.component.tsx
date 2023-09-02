@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { DateHelper, DateHelperFormatRegex } from '../../../../../classes';
-import { BasicFormComponent } from '../../../../Forms';
+import { BasicFormComponent } from '../../../../forms';
 import './TimeEntryPicker.style.scss';
 
 interface ITimeEntryPickerProps {

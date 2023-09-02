@@ -1,14 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { TimeEntryService, TimeEntryListComponent } from "../../core";
-import { ControlTimerComponent } from '../../core/components/Controls/Timer/Timer.component';
+import { ControlTimerComponent } from '../../core/components/controls/Timer/Timer.component';
 import { useTimeEntries } from '../../core/hooks';
 import { ITimeEntry } from '../../core/models';
 
 function HomePage() {
   const entries = useTimeEntries();
-
+  const [activeTimeEntry, setActiveTimeEntry] = useState<ITimeEntry | undefined>(undefined);
   useEffect(() => {
- 
+    setActiveTimeEntry(getUnfinishedTimeEntry());
   }, [entries]);
 
   function getUnfinishedTimeEntry(): ITimeEntry | undefined {
@@ -35,8 +35,6 @@ function HomePage() {
     TimeEntryService.startNewEntry({ title });
   }
 
-  const activeTimeEntry = getUnfinishedTimeEntry();
-
   return (
     <div className="App">
       <h6>Tomaffee</h6>
@@ -49,7 +47,6 @@ function HomePage() {
       <TimeEntryListComponent
         entries={entries}
         onContinue={handleContinue}
-        onStop={handleStop}
         onRemove={handleRemove}
         onValueChange={handleChange}
       />

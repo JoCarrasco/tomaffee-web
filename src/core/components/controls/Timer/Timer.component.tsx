@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNow } from '../../../hooks';
 import { ITimeEntry } from '../../../models';
-import { BasicFormComponent } from '../../Forms';
-import { TimeEntryDurationComponent } from '../../TimeEntry';
+import { BasicFormComponent } from '../../forms';
+import { TimeEntryDurationComponent } from '../../entries';
 import './Timer.component.style.scss';
 
 interface IControlTimerComponentProps {

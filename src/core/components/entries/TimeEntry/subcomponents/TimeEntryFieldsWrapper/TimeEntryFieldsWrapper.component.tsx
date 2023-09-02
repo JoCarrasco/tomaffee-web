@@ -1,7 +1,7 @@
 import { ITimeEntry } from '../../../../../models';
 import { IBasicDataHandler } from '../../../../../models/interfaces/time-entry';
-import { BasicFormComponent } from '../../../../Forms/BasicForm/BasicForm.component';
-
+import { BasicFormComponent } from '../../../../forms/BasicForm/BasicForm.component';
+import './TimeEntryFieldsWrapper.styles.scss';
 interface ITimeEntryFieldsWrapperComponentProps extends IBasicDataHandler {
   title: string;
   description?: string;
@@ -14,7 +14,6 @@ export const TimeEntryFieldsWrapperComponent = (
   const defaultValue = 'Add a description';
   const canEdit = props.isEditable;
   const title = props.title ? props.title : defaultValue;
-  const description = props.description ? props.description : defaultValue;
 
   function handleChange(propName: string, value: string) {
     return props.onValueChange({ key: propName as keyof ITimeEntry, value });

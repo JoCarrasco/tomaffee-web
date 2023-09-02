@@ -1,3 +1,3 @@
-export * from './TimeEntry/index';
-export * from './Misc/index';
-export * from './Forms';
+export * from './entries/index';
+export * from './misc/index';
+export * from './forms';

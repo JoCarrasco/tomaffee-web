@@ -10,7 +10,7 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
   const timeEntryLists = TimeEntryHelper.parseEntriesToEntriesWithDate(
     props.entries,
   );
-  const noEntriesTplFallback =
+  const EmptyTimeEntries =
     props.entries.length === 0 ? <p>No Time Entries</p> : null;
 
   function renderTimeEntry(entry: ITimeEntryNotNull) {
@@ -28,7 +28,7 @@ export const TimeEntryListComponent = (props: ITimeEntryListComponentProps) => {
   function renderList() {
     return (
       <>
-        {noEntriesTplFallback}
+        {EmptyTimeEntries}
         {timeEntryLists.map((timeEntryList, index) => (
           <div key={index.toString()}>
             <TimeEntryListHeaderComponent

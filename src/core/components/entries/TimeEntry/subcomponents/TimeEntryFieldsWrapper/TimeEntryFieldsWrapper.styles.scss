@@ -1,4 +1,6 @@
 .time-entry-text-info-wrapper {
+  display: flex;
+  justify-content: flex-start;
   text-align: left;
   input.time-entry-input-edit {
     border:none;
