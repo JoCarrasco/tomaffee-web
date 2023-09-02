@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ITimeEntryNotNull } from '../../../../../models';
+import { ITimeEntryFinished } from '../../../../../models';
 import { IDataHandler } from '../../../../../models/interfaces/time-entry';
 import { TimeEntryDurationComponent } from '../TimeEntryDuration';
 import { TimeEntryEditorComponent } from '../TimeEntryEditor';
@@ -20,7 +20,7 @@ export function TimeEntryTimeDisplayComponent(
     </button>
   );
 
-  function handleChange(value: Partial<ITimeEntryNotNull>) {
+  function handleChange(value: Partial<ITimeEntryFinished>) {
     props.onValueChange(value);
     setShowEditor(false);
   }

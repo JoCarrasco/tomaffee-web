@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IDataObj, ITimeEntryNotNull } from '../../../models';
+import { IDataObj, ITimeEntryFinished } from '../../../models';
 import { ITimeEntryComponentProps } from './TimeEntry.models';
 import {
   TimeEntryTimeDisplayComponent,
@@ -29,7 +29,7 @@ export const TimeEntryComponent = (props: ITimeEntryComponentProps) => {
     }
   }
 
-  function handleEditorChange(change: Partial<ITimeEntryNotNull>) {
+  function handleEditorChange(change: Partial<ITimeEntryFinished>) {
     props.onChange(props.timeEntry.id, change);
   }
 

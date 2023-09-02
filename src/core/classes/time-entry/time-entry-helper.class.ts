@@ -1,6 +1,6 @@
 import { DateHelper } from "..";
 import { StorageKey } from "../..";
-import { ITimeEntry, ITimeEntryNotNull } from "../../models";
+import { ITimeEntry, ITimeEntryFinished } from "../../models";
 import { StorageHelper } from "../storage/storage.helper.class";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -105,9 +105,9 @@ export class TimeEntryHelper {
     })
   }
 
-  static parseEntriesToEntriesWithDate(entries: ITimeEntry[]): { date: Date; entries: ITimeEntryNotNull[]}[] {
-    const formattedEntries: { date: Date; entries: ITimeEntryNotNull[] }[] = [];
-    const filteredEntries = entries.filter((x) => x.end !== undefined) as ITimeEntryNotNull[];
+  static parseEntriesToEntriesWithDate(entries: ITimeEntry[]): { date: Date; entries: ITimeEntryFinished[]}[] {
+    const formattedEntries: { date: Date; entries: ITimeEntryFinished[] }[] = [];
+    const filteredEntries = entries.filter((x) => x.end !== undefined) as ITimeEntryFinished[];
     for (const entry of filteredEntries) {
       const targetFormattedIndex = formattedEntries.findIndex((x) => DateHelper.isSameDay(entry.start, x.date));
       if (targetFormattedIndex !== -1) {

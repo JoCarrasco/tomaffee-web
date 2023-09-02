@@ -1,9 +1,9 @@
-import { ITimeEntry, ITimeEntryNotNull } from "../../../models";
+import { ITimeEntry, ITimeEntryFinished } from "../../../models";
 
 export interface ITimeEntryListComponentProps {
   forcedActiveTimeEntryId?: string;
   entries: ITimeEntry[];
   onRemove: (id: string) => any; 
   onContinue: (id: string) => any;
-  onValueChange: (id:string, change: Partial<ITimeEntryNotNull>) => any;
+  onValueChange: (id:string, change: Partial<ITimeEntryFinished>) => any;
 }
